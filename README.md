@@ -33,6 +33,8 @@ git push
 If you are pushing for the first time, it might throw an error for the created branch. Use the following to set tracking of your branch with origin
 ```bash
 git push --set-upstream origin <yourname>
+# or
+git push -u origin <yourname>
 ```
 5. Merging the branches with master (for later). Once we agree on some work, we can merge the changes back to main.
 ```bash
