@@ -8,14 +8,18 @@ Download the dataset from [here](https://www.kaggle.com/kimjihoo/coronavirusdata
 As discussed in the meeting, we can work on the Case Study by creating separate branches off of main branch or work in the main branch by creating separate directories. For conflict-free changes, here are both the steps:
 
 ### Create a separate branch (from main)
-1. Before working or creating a branch, make sure to pull the recent changes from the repository:
+1. Before working or creating a branch, make sure to pull the recent changes from the repository.
 ```bash
 git pull
 ```
-2. Create a new branch with your name. Check if it is created by writing `git branch`
+If any change is made in the main branch, switch to the main branch `git checkout master` and then pull otherwise pull from your working branch `git checkout <yourname>`.
+
+2. Create a new branch with your name. 
 ```bash
 git branch <yourname>
 ```
+Check if it is created by writing `git branch`
+
 3. Switch to the created branch.
 ```bash
 git checkout <yourname>
@@ -26,6 +30,10 @@ git add <filenames>
 git commit -m "commit message"
 git push
 ```
+If you are pushing for the first time, it might throw an error for the created branch. Use the following to set tracking of your branch with origin
+```bash
+git push --set-upstream origin <yourname>
+```
 5. Merging the branches with master (for later). Once we agree on some work, we can merge the changes back to main.
 ```bash
 git checkout main
@@ -34,6 +42,6 @@ git push
 ```
 
 ### Create a directory (in main)
-1. Create a directory with your name
+1. Create a directory with your name (in the main branch)
 2. Add files inside the directory
 3. Commit and push the changes (in the main branch)
