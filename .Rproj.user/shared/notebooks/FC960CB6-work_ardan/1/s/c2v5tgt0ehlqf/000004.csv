@@ -1,0 +1,14 @@
+"0","
+  case_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/Case.csv"")
+  patientInfo_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/PatientInfo.csv"")
+"
+"2","Some columns are type 'integer64' but package bit64 is not installed. Those columns will print as strange looking floating point data. There is no need to reload the data. Simply install.packages('bit64') to obtain the integer64 print method and print the data again."
+"0","  policy_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/Policy.csv"")"
+"0","  region_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/Region.csv"")"
+"0","  searchTrend_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/SearchTrend.csv"")"
+"0","  seoulFloating_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/SeoulFloating.csv"")"
+"0","  time_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/Time.csv"")"
+"0","  timeAge_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/TimeAge.csv"")"
+"0","  timeGender_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/TimeGender.csv"")"
+"0","  timeProvince_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/TimeProvince.csv"")"
+"0","  weather_dt <- fread(""~/Desktop/tum ws20/R/case_study_data/data/Weather.csv"")"
