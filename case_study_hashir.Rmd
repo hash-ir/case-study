@@ -3,12 +3,10 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
 ```{r}
-plot(cars)
+library(data.table)
+library(magrittr)
+library(ggplot2)
 ```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
@@ -16,3 +14,341 @@ Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by press
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+Load all the tables
+```{r}
+tables = list.files("data/", full.names = T)
+tables
+```
+Read individual csv files   
+```{r}
+case_dt = fread(tables[1])
+pinfo_dt = fread(tables[2])
+policy_dt = fread(tables[3])
+region_dt = fread(tables[4])
+search_dt = fread(tables[5])
+seoul_dt = fread(tables[6])
+time_dt = fread(tables[7])
+tage_dt = fread(tables[8])
+tgender_dt = fread(tables[9])
+tprovince_dt = fread(tables[10])
+weather_dt = fread(tables[11])
+```
+
+### CASE
+
+1.case_id: the ID of the infection case
+
+* case_id(7) = region_code(5) + case_number(2)
+* You can check the region_code in 'Region.csv
+
+2.province: Special City / Metropolitan City / Province(-do)
+
+3.city: City(-si) / Country (-gun) / District (-gu)
+
+* The value 'from other city' means that where the group infection started is other city.
+
+4.group: TRUE: group infection / FALSE: not group
+
+* If the value is 'TRUE' in this column, the value of 'infection_cases' means the name of group.
+* The values named 'contact with patient', 'overseas inflow' and 'etc' are not group infection.
+
+5.infection_case: the infection case (the name of group or other cases)
+
+* The value 'overseas inflow' means that the infection is from other country.
+* The value 'etc' includes individual cases, cases where relevance classification 
+is ongoing after investigation, and cases under investigation
+
+6.latitude: the latitude of the group (WGS84)
+
+7.longitude: the longitude of the group (WGS84)
+
+```{r}
+head(case_dt)
+```
+
+```{r}
+summary(case_dt)
+```
+
+```{r}
+str(case_dt)
+```
+
+```{r}
+case_dt[, unique(infection_case)]
+case_dt[, unique(province)]
+```
+```{r}
+group_vs_single = case_dt[, .(cases = sum(confirmed)), by = group]
+group_vs_single
+```
+```{r}
+city_wise_cases = case_dt[, .(cases = sum(confirmed)), by = city][order(cases, decreasing = T)]
+city_wise_cases
+```
+
+
+### PATIENT
+
+1.patient_id: the ID of the patient
+
+* patient_id(10) = region_code(5) + patient_number(5)
+* You can check the region_code in 'Region.csv'
+* There are two types of the patient_number
+  1) local_num: The number given by the local government.
+  2) global_num: The number given by the KCDC
+
+2.sex: the sex of the patient
+
+3.age: the age of the patient
+
+* 0s: 0 ~ 9
+* 10s: 10 ~ 19
+...
+* 90s: 90 ~ 99
+* 100s: 100 ~ 109
+
+4.country: the country of the patient
+
+5.province: the province of the patient
+
+6.city: the city of the patient
+
+7.infection_case: the case of infection
+
+8.infected_by: the ID of who infected the patient
+
+* This column refers to the 'patient_id' column.
+
+9.contact_number: the number of contacts with people
+
+10.symptom_onset_date: the date of symptom onset
+
+11.confirmed_date: the date of being confirmed
+
+12.released_date: the date of being released
+
+13.deceased_date: the date of being deceased
+
+14.state: isolated / released / deceased
+
+* isolated: being isolated in the hospital
+* released: being released from the hospital
+* deceased: being deceased
+
+```{r}
+View(pinfo_dt)
+```
+
+```{r}
+head(pinfo_dt)
+str(pinfo_dt)
+```
+```{r}
+pinfo_dt[, unique(age)]
+```
+```{r}
+
+```
+
+### POLICY
+
+1.policy_id: the ID of the policy
+
+2.country: the country that implemented the policy
+
+3.type: the type of the policy
+
+4.gov_policy: the policy of the government
+
+5.detail: the detail of the policy
+
+6.start_date: the start date of the policy
+
+7.end_date: the end date of the policy
+
+```{r}
+View(policy_dt)
+```
+
+```{r}
+head(policy_dt)
+str(policy_dt)
+```
+Different policies
+
+```{r}
+policy_dt[, unique(gov_policy)]
+```
+
+
+```{r}
+dt1 = time_dt[, c("date", "confirmed")]
+dt2 = policy_dt[, .(date = end_date, gov_policy, type, detail)]
+head(dt1)
+head(dt2)
+policy_cases = merge(
+  dt1,
+  dt2,
+  by = "date",
+  all.x = T
+)
+head(policy_cases)
+```
+
+
+```{r}
+```
+
+### REGION
+
+1.code: the code of the region
+
+2.province: Special City / Metropolitan City / Province(-do)
+
+3.city: City(-si) / Country (-gun) / District (-gu)
+
+4.latitude: the latitude of the visit (WGS84)
+
+5.longitude: the longitude of the visit (WGS84)
+
+6.elementary_school_count: the number of elementary schools
+
+7.kindergarten_count: the number of kindergartens
+
+8.university_count: the number of universities
+
+9.academy_ratio: the ratio of academies
+
+10.elderly_population_ratio: the ratio of the elderly population
+
+11.elderly_alone_ratio: the ratio of elderly households living alone
+
+12.nursing_home_count: the number of nursing homes
+
+```{r}
+```
+
+
+```{r}
+```
+
+### SEARCH TREND
+
+1.date: YYYY-MM-DD
+
+2.cold: the search volume of 'cold' in Korean language
+
+* The unit means relative value by setting the highest search volume in the period to 100.
+
+3.flu: the search volume of 'flu' in Korean language
+
+* Same as above.
+
+4.pneumonia: the search volume of 'pneumonia' in Korean language
+
+* Same as above.
+
+5.coronavirus: the search volume of 'coronavirus' in Korean language
+
+* Same as above.
+
+```{r}
+View(search_dt)
+```
+
+
+```{r}
+head(search_dt)
+str(search_dt)
+```
+Filter by year 2020
+```{r}
+search_2020 = search_dt[year(as.Date(date)) == 2020]
+head(search_2020)
+```
+
+Melt the data table to get keyword column and search volume
+```{r}
+long_search = melt(data = search_2020,
+  id.vars = "date",
+  measure.vars = c("cold", "flu", "pneumonia", "coronavirus"),
+  variable.name = "word",
+  value.name = "value"
+)
+head(long_search)
+```
+```{r}
+ggplot(long_search, aes(x = date, y = value, color = word)) + geom_point() + labs(x = "time", y = "search volume", color = "Keyword")
+```
+
+### SEOUL FLOATING
+
+```{r}
+```
+
+
+```{r}
+```
+
+
+```{r}
+```
+
+### TIME
+
+1.date: YYYY-MM-DD
+
+2.time: Time (0 = AM 12:00 / 16 = PM 04:00)
+
+* The time for KCDC to open the information has been changed from PM 04:00 to AM 12:00 since March 2nd.
+
+3.test: the accumulated number of tests
+
+* A test is a diagnosis of an infection.
+
+4.negative: the accumulated number of negative results
+
+5.confirmed: the accumulated number of positive results
+
+6.released: the accumulated number of releases
+
+7.deceased: the accumulated number of deceases
+```{r}
+View(time_dt)
+```
+
+```{r}
+```
+
+```{r}
+```
+
+```{r}
+```
+### TIME AGE
+
+```{r}
+View(tage_dt)
+```
+
+### TIME GENDER
+
+```{r}
+View(tgender_dt)
+```
+
+### TIME PROVINCE
+
+```{r}
+View(tprovince_dt)
+```
+
+### WEATHER
+
+```{r}
+View(weather_dt)
+```
+
+

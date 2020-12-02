@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/*
+case-study.Rproj
+case_study_instructions.pdf

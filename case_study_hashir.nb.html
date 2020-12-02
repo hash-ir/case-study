@@ -1810,21 +1810,650 @@ summary {
 
 
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Ctrl+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkYXRhLnRhYmxlKVxuYGBgIn0= -->
+<pre class="r"><code>library(data.table)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2Qgb3ZlcndyaXR0ZW4gYnkgJ2RhdGEudGFibGUnOlxuICBtZXRob2QgICAgICAgICAgIGZyb21cbiAgcHJpbnQuZGF0YS50YWJsZSAgICAgXG5kYXRhLnRhYmxlIDEuMTMuMiB1c2luZyA0IHRocmVhZHMgKHNlZSA/Z2V0RFR0aHJlYWRzKS4gIExhdGVzdCBuZXdzOiByLWRhdGF0YWJsZS5jb21cbiJ9 -->
+<pre><code>Registered S3 method overwritten by &#39;data.table&#39;:
+  method           from
+  print.data.table     
+data.table 1.13.2 using 4 threads (see ?getDTthreads).  Latest news: r-datatable.com</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShtYWdyaXR0cilcbmxpYnJhcnkoZ2dwbG90MilcbmBgYCJ9 -->
+<pre class="r"><code>library(magrittr)
+library(ggplot2)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
 <p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
 <p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
+<p>Load all the tables</p>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGFibGVzID0gbGlzdC5maWxlcyhcImRhdGEvXCIsIGZ1bGwubmFtZXMgPSBUKVxudGFibGVzXG5gYGAifQ== -->
+<pre class="r"><code>tables = list.files(&quot;data/&quot;, full.names = T)
+tables</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImRhdGEvQ2FzZS5jc3ZcIiAgICAgICAgICBcImRhdGEvUGF0aWVudEluZm8uY3N2XCIgICBcImRhdGEvUG9saWN5LmNzdlwiICAgICAgICBcImRhdGEvUmVnaW9uLmNzdlwiICAgICAgICBcImRhdGEvU2VhcmNoVHJlbmQuY3N2XCIgIFxuIFs2XSBcImRhdGEvU2VvdWxGbG9hdGluZy5jc3ZcIiBcImRhdGEvVGltZS5jc3ZcIiAgICAgICAgICBcImRhdGEvVGltZUFnZS5jc3ZcIiAgICAgICBcImRhdGEvVGltZUdlbmRlci5jc3ZcIiAgICBcImRhdGEvVGltZVByb3ZpbmNlLmNzdlwiIFxuWzExXSBcImRhdGEvV2VhdGhlci5jc3ZcIiAgICAgIFxuIn0= -->
+<pre><code> [1] &quot;data/Case.csv&quot;          &quot;data/PatientInfo.csv&quot;   &quot;data/Policy.csv&quot;        &quot;data/Region.csv&quot;        &quot;data/SearchTrend.csv&quot;  
+ [6] &quot;data/SeoulFloating.csv&quot; &quot;data/Time.csv&quot;          &quot;data/TimeAge.csv&quot;       &quot;data/TimeGender.csv&quot;    &quot;data/TimeProvince.csv&quot; 
+[11] &quot;data/Weather.csv&quot;      </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Read individual csv files</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FzZV9kdCA9IGZyZWFkKHRhYmxlc1sxXSlcbnBpbmZvX2R0ID0gZnJlYWQodGFibGVzWzJdKVxucG9saWN5X2R0ID0gZnJlYWQodGFibGVzWzNdKVxucmVnaW9uX2R0ID0gZnJlYWQodGFibGVzWzRdKVxuc2VhcmNoX2R0ID0gZnJlYWQodGFibGVzWzVdKVxuc2VvdWxfZHQgPSBmcmVhZCh0YWJsZXNbNl0pXG50aW1lX2R0ID0gZnJlYWQodGFibGVzWzddKVxudGFnZV9kdCA9IGZyZWFkKHRhYmxlc1s4XSlcbnRnZW5kZXJfZHQgPSBmcmVhZCh0YWJsZXNbOV0pXG50cHJvdmluY2VfZHQgPSBmcmVhZCh0YWJsZXNbMTBdKVxud2VhdGhlcl9kdCA9IGZyZWFkKHRhYmxlc1sxMV0pXG5gYGAifQ== -->
+<pre class="r"><code>case_dt = fread(tables[1])
+pinfo_dt = fread(tables[2])
+policy_dt = fread(tables[3])
+region_dt = fread(tables[4])
+search_dt = fread(tables[5])
+seoul_dt = fread(tables[6])
+time_dt = fread(tables[7])
+tage_dt = fread(tables[8])
+tgender_dt = fread(tables[9])
+tprovince_dt = fread(tables[10])
+weather_dt = fread(tables[11])</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<div id="case" class="section level3">
+<h3>CASE</h3>
+<p>1.case_id: the ID of the infection case</p>
+<ul>
+<li>case_id(7) = region_code(5) + case_number(2)</li>
+<li>You can check the region_code in ’Region.csv</li>
+</ul>
+<p>2.province: Special City / Metropolitan City / Province(-do)</p>
+<p>3.city: City(-si) / Country (-gun) / District (-gu)</p>
+<ul>
+<li>The value ‘from other city’ means that where the group infection started is other city.</li>
+</ul>
+<p>4.group: TRUE: group infection / FALSE: not group</p>
+<ul>
+<li>If the value is ‘TRUE’ in this column, the value of ‘infection_cases’ means the name of group.</li>
+<li>The values named ‘contact with patient’, ‘overseas inflow’ and ‘etc’ are not group infection.</li>
+</ul>
+<p>5.infection_case: the infection case (the name of group or other cases)</p>
+<ul>
+<li>The value ‘overseas inflow’ means that the infection is from other country.</li>
+<li>The value ‘etc’ includes individual cases, cases where relevance classification is ongoing after investigation, and cases under investigation</li>
+</ul>
+<p>6.latitude: the latitude of the group (WGS84)</p>
+<p>7.longitude: the longitude of the group (WGS84)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChjYXNlX2R0KVxuYGBgIn0= -->
+<pre class="r"><code>head(case_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjh9LCJyZGYiOiJINHNJQUFBQUFBQUFCcVZUUzNQYU1CQVdCQ2ZBTkkrWlRFKzljTzEwOFBnaC9EZ20wR1k0OUpMa2tKd1lJUVJvWWlSR3RrTno2NzMvdUlmUXRaSEFlSExyNGJPMW4zWS9yVmE3OTZNbnYvdlVSUWlkb0JiZ3hJSWxzbTRlaHVNeFFxMG1HQTNZNkJUL1grQjBEWXMyNEJ4d2lpNXZid0MzZ0NGZ0JQZ08rQUY3VitYK0x0QjZZREpQL3Q4NFZ1MCtTN0ZJaWVndmNzMTA3alpFa0pjRGNYYVhLM2t3UHowVHNhQkxKcXN4SXprRm5ROWk0SVR5dEtJQUg2T2F6Zms0STJ3alJXK1k1TlBVYU4xenV0eVFOMjFlYStuZWtDUkpiOGhFeHBUZStySlByZmRJcGduclBUSWhlRnFxYVpmTEVYbURTTVdPSXovL0pHTEZSVWtxQXJMTFhOSGwvb1VRK2dQWUFDYUFieHBmYTlsMy9OQWUrRkhndVpwb0E0RWp6NG1xRGs3a0JuNlZ3SUVUdUJVaUNHUHNlUlVDUjY0emlPc1A1M3FCSGNkZU1QQ09HTWYxSTF4bG9najdVWGpFaE5oejRnTVQyZzdHZm5nY0ZXTWYrN1hlN1NpNXNRVlpzVlJYcHZrYlB0dnQ5bS9OMGFJSlNWT2RzU0c3TTVJUmU2NGd2dTV1TksvS3VkRFBUa25LSm54bWFybFc4cFVMeXJUZG9qd3pMV0V0bE16WDJyamdZczVveHFXWUZBb21kU3JGbktzVjIrc2xKT05aUHRzN0pOREFPd0toOTFxQ1ozSmRDRUtLeldKMHJkck5HcXBHWE9haXVOS3NUNWU1ZU9salBRWkZ1eU5kdW9adUxMTnU3NDVzYmJXVXBhVk9HYVFsVEpaV1FxYk1EUFFGUEVkWk9YdXR1TWhNbVlGTjdVeG14UGgxcVV3TVU5NE52ZjhEc2hFQUZyRUVBQUE9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["case_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["province"],"name":[2],"type":["chr"],"align":["left"]},{"label":["city"],"name":[3],"type":["chr"],"align":["left"]},{"label":["group"],"name":[4],"type":["lgl"],"align":["right"]},{"label":["infection_case"],"name":[5],"type":["chr"],"align":["left"]},{"label":["confirmed"],"name":[6],"type":["int"],"align":["right"]},{"label":["latitude"],"name":[7],"type":["chr"],"align":["left"]},{"label":["longitude"],"name":[8],"type":["chr"],"align":["left"]}],"data":[{"1":"1000001","2":"Seoul","3":"Yongsan-gu","4":"TRUE","5":"Itaewon Clubs","6":"139","7":"37.538621","8":"126.992652"},{"1":"1000002","2":"Seoul","3":"Gwanak-gu","4":"TRUE","5":"Richway","6":"119","7":"37.48208","8":"126.901384"},{"1":"1000003","2":"Seoul","3":"Guro-gu","4":"TRUE","5":"Guro-gu Call Center","6":"95","7":"37.508163","8":"126.884387"},{"1":"1000004","2":"Seoul","3":"Yangcheon-gu","4":"TRUE","5":"Yangcheon Table Tennis Club","6":"43","7":"37.546061","8":"126.874209"},{"1":"1000005","2":"Seoul","3":"Dobong-gu","4":"TRUE","5":"Day Care Center","6":"43","7":"37.679422","8":"127.044374"},{"1":"1000006","2":"Seoul","3":"Guro-gu","4":"TRUE","5":"Manmin Central Church","6":"41","7":"37.481059","8":"126.894343"}],"options":{"columns":{"min":{},"max":[10],"total":[8]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtbWFyeShjYXNlX2R0KVxuYGBgIn0= -->
+<pre class="r"><code>summary(case_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgIGNhc2VfaWQgICAgICAgICAgcHJvdmluY2UgICAgICAgICAgICAgY2l0eSAgICAgICAgICAgICBncm91cCAgICAgICAgIGluZmVjdGlvbl9jYXNlICAgICAgIGNvbmZpcm1lZCAgICAgICAgIGxhdGl0dWRlICAgICAgICBcbiBNaW4uICAgOjEwMDAwMDEgICBMZW5ndGg6MTc0ICAgICAgICAgTGVuZ3RoOjE3NCAgICAgICAgIE1vZGUgOmxvZ2ljYWwgICBMZW5ndGg6MTc0ICAgICAgICAgTWluLiAgIDogICAwLjAwICAgTGVuZ3RoOjE3NCAgICAgICAgXG4gMXN0IFF1LjoxMTAwMDA2ICAgQ2xhc3MgOmNoYXJhY3RlciAgIENsYXNzIDpjaGFyYWN0ZXIgICBGQUxTRTo1MCAgICAgICAgQ2xhc3MgOmNoYXJhY3RlciAgIDFzdCBRdS46ICAgNC4wMCAgIENsYXNzIDpjaGFyYWN0ZXIgIFxuIE1lZGlhbiA6MTcwMDAwNCAgIE1vZGUgIDpjaGFyYWN0ZXIgICBNb2RlICA6Y2hhcmFjdGVyICAgVFJVRSA6MTI0ICAgICAgIE1vZGUgIDpjaGFyYWN0ZXIgICBNZWRpYW4gOiAgMTAuMDAgICBNb2RlICA6Y2hhcmFjdGVyICBcbiBNZWFuICAgOjI2ODYyMTYgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDogIDY1LjQ5ICAgICAgICAgICAgICAgICAgICAgXG4gM3JkIFF1Ljo0MTAwMDA0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDNyZCBRdS46ICAzMS43NSAgICAgICAgICAgICAgICAgICAgIFxuIE1heC4gICA6NzAwMDAwNCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBNYXguICAgOjQ1MTEuMDAgICAgICAgICAgICAgICAgICAgICBcbiAgbG9uZ2l0dWRlICAgICAgICBcbiBMZW5ndGg6MTc0ICAgICAgICBcbiBDbGFzcyA6Y2hhcmFjdGVyICBcbiBNb2RlICA6Y2hhcmFjdGVyICBcbiAgICAgICAgICAgICAgICAgICBcbiAgICAgICAgICAgICAgICAgICBcbiAgICAgICAgICAgICAgICAgICBcbiJ9 -->
+<pre><code>    case_id          province             city             group         infection_case       confirmed         latitude        
+ Min.   :1000001   Length:174         Length:174         Mode :logical   Length:174         Min.   :   0.00   Length:174        
+ 1st Qu.:1100006   Class :character   Class :character   FALSE:50        Class :character   1st Qu.:   4.00   Class :character  
+ Median :1700004   Mode  :character   Mode  :character   TRUE :124       Mode  :character   Median :  10.00   Mode  :character  
+ Mean   :2686216                                                                            Mean   :  65.49                     
+ 3rd Qu.:4100004                                                                            3rd Qu.:  31.75                     
+ Max.   :7000004                                                                            Max.   :4511.00                     
+  longitude        
+ Length:174        
+ Class :character  
+ Mode  :character  
+                   
+                   
+                   </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKGNhc2VfZHQpXG5gYGAifQ== -->
+<pre class="r"><code>str(case_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2xhc3NlcyAnZGF0YS50YWJsZScgYW5kICdkYXRhLmZyYW1lJzpcdDE3NCBvYnMuIG9mICA4IHZhcmlhYmxlczpcbiAkIGNhc2VfaWQgICAgICAgOiBpbnQgIDEwMDAwMDEgMTAwMDAwMiAxMDAwMDAzIDEwMDAwMDQgMTAwMDAwNSAxMDAwMDA2IDEwMDAwMDcgMTAwMDAwOCAxMDAwMDA5IDEwMDAwMTAgLi4uXG4gJCBwcm92aW5jZSAgICAgIDogY2hyICBcIlNlb3VsXCIgXCJTZW91bFwiIFwiU2VvdWxcIiBcIlNlb3VsXCIgLi4uXG4gJCBjaXR5ICAgICAgICAgIDogY2hyICBcIllvbmdzYW4tZ3VcIiBcIkd3YW5hay1ndVwiIFwiR3Vyby1ndVwiIFwiWWFuZ2NoZW9uLWd1XCIgLi4uXG4gJCBncm91cCAgICAgICAgIDogbG9naSAgVFJVRSBUUlVFIFRSVUUgVFJVRSBUUlVFIFRSVUUgLi4uXG4gJCBpbmZlY3Rpb25fY2FzZTogY2hyICBcIkl0YWV3b24gQ2x1YnNcIiBcIlJpY2h3YXlcIiBcIkd1cm8tZ3UgQ2FsbCBDZW50ZXJcIiBcIllhbmdjaGVvbiBUYWJsZSBUZW5uaXMgQ2x1YlwiIC4uLlxuICQgY29uZmlybWVkICAgICA6IGludCAgMTM5IDExOSA5NSA0MyA0MyA0MSAzNiAxNyAyNSAzMCAuLi5cbiAkIGxhdGl0dWRlICAgICAgOiBjaHIgIFwiMzcuNTM4NjIxXCIgXCIzNy40ODIwOFwiIFwiMzcuNTA4MTYzXCIgXCIzNy41NDYwNjFcIiAuLi5cbiAkIGxvbmdpdHVkZSAgICAgOiBjaHIgIFwiMTI2Ljk5MjY1MlwiIFwiMTI2LjkwMTM4NFwiIFwiMTI2Ljg4NDM4N1wiIFwiMTI2Ljg3NDIwOVwiIC4uLlxuIC0gYXR0cigqLCBcIi5pbnRlcm5hbC5zZWxmcmVmXCIpPTxleHRlcm5hbHB0cj4gXG4gLSBhdHRyKCosIFwiaW5kZXhcIik9IGludCgwKSBcbiAgLi4tIGF0dHIoKiwgXCJfX2dyb3VwXCIpPSBpbnQgWzE6MTc0XSAzNiAzNyAzOCA0NiA0NyA0OCA1NiA1NyA1OCA2MSAuLi5cbiJ9 -->
+<pre><code>Classes &#39;data.table&#39; and &#39;data.frame&#39;:  174 obs. of  8 variables:
+ $ case_id       : int  1000001 1000002 1000003 1000004 1000005 1000006 1000007 1000008 1000009 1000010 ...
+ $ province      : chr  &quot;Seoul&quot; &quot;Seoul&quot; &quot;Seoul&quot; &quot;Seoul&quot; ...
+ $ city          : chr  &quot;Yongsan-gu&quot; &quot;Gwanak-gu&quot; &quot;Guro-gu&quot; &quot;Yangcheon-gu&quot; ...
+ $ group         : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+ $ infection_case: chr  &quot;Itaewon Clubs&quot; &quot;Richway&quot; &quot;Guro-gu Call Center&quot; &quot;Yangcheon Table Tennis Club&quot; ...
+ $ confirmed     : int  139 119 95 43 43 41 36 17 25 30 ...
+ $ latitude      : chr  &quot;37.538621&quot; &quot;37.48208&quot; &quot;37.508163&quot; &quot;37.546061&quot; ...
+ $ longitude     : chr  &quot;126.992652&quot; &quot;126.901384&quot; &quot;126.884387&quot; &quot;126.874209&quot; ...
+ - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; 
+ - attr(*, &quot;index&quot;)= int(0) 
+  ..- attr(*, &quot;__group&quot;)= int [1:174] 36 37 38 46 47 48 56 57 58 61 ...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FzZV9kdFssIHVuaXF1ZShpbmZlY3Rpb25fY2FzZSldXG5gYGAifQ== -->
+<pre class="r"><code>case_dt[, unique(infection_case)]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIkl0YWV3b24gQ2x1YnNcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiUmljaHdheVwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBbM10gXCJHdXJvLWd1IENhbGwgQ2VudGVyXCIgICAgICAgICAgICAgICAgICAgICAgICAgICBcIllhbmdjaGVvbiBUYWJsZSBUZW5uaXMgQ2x1YlwiICAgICAgICAgICAgICAgICAgXG4gWzVdIFwiRGF5IENhcmUgQ2VudGVyXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJNYW5taW4gQ2VudHJhbCBDaHVyY2hcIiAgICAgICAgICAgICAgICAgICAgICAgIFxuIFs3XSBcIlNNUiBOZXdseSBQbGFudGVkIENodXJjaGVzIEdyb3VwXCIgICAgICAgICAgICAgIFwiRG9uZ2FuIENodXJjaFwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBbOV0gXCJDb3VwYW5nIExvZ2lzdGljcyBDZW50ZXJcIiAgICAgICAgICAgICAgICAgICAgICBcIldhbmdzdW5nIENodXJjaFwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTFdIFwiRXVucHllb25nIFN0LiBNYXJ5J3MgSG9zcGl0YWxcIiAgICAgICAgICAgICAgICAgXCJTZW9uZ2RvbmctZ3UgQVBUXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzEzXSBcIkpvbmdubyBDb21tdW5pdHkgQ2VudGVyXCIgICAgICAgICAgICAgICAgICAgICAgIFwiU2Ftc3VuZyBNZWRpY2FsIENlbnRlclwiICAgICAgICAgICAgICAgICAgICAgICBcblsxNV0gXCJKdW5nLWd1IEZhc2hpb24gQ29tcGFueVwiICAgICAgICAgICAgICAgICAgICAgICBcIlllb25hbmEgTmV3cyBDbGFzc1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTddIFwiS29yZWEgQ2FtcHVzIENydXNhZGUgb2YgQ2hyaXN0XCIgICAgICAgICAgICAgICAgXCJHYW5nbmFtIFllb2tzYW0tZG9uZyBnYXRoZXJpbmdcIiAgICAgICAgICAgICAgIFxuWzE5XSBcIkRhZWplb24gZG9vci10by1kb29yIHNhbGVzXCIgICAgICAgICAgICAgICAgICAgIFwiR2V1bWNoZW9uLWd1IHJpY2UgbWlsbGluZyBtYWNoaW5lIG1hbnVmYWN0dXJlXCJcblsyMV0gXCJTaGluY2hlb25qaSBDaHVyY2hcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIkd1cmkgQ29sbGVjdGl2ZSBJbmZlY3Rpb25cIiAgICAgICAgICAgICAgICAgICAgXG5bMjNdIFwiS0IgTGlmZSBJbnN1cmFuY2VcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJZZW9uZ2RldW5ncG8gTGVhcm5pbmcgSW5zdGl0dXRlXCIgICAgICAgICAgICAgIFxuWzI1XSBcIkdhbmduYW0gRG9uZ2luIENodXJjaFwiICAgICAgICAgICAgICAgICAgICAgICAgIFwiQmlibGljYWwgTGFuZ3VhZ2Ugc3R1ZHkgbWVldGluZ1wiICAgICAgICAgICAgICBcblsyN10gXCJTZW9jaG8gRmFtaWx5XCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIkFueWFuZyBHdW5wbyBQYXN0b3JzIEdyb3VwXCIgICAgICAgICAgICAgICAgICAgXG5bMjldIFwiU2Ftc3VuZyBGaXJlICYgTWFyaW5lIEluc3VyYW5jZVwiICAgICAgICAgICAgICAgXCJTSiBJbnZlc3RtZW50IENhbGwgQ2VudGVyXCIgICAgICAgICAgICAgICAgICAgIFxuWzMxXSBcIllvbmdpbiBCcm90aGVyc1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiU2VvdWwgQ2l0eSBIYWxsIFN0YXRpb24gc2FmZXR5IHdvcmtlclwiICAgICAgICBcblszM10gXCJVaXdhbmcgTG9naXN0aWNzIENlbnRlclwiICAgICAgICAgICAgICAgICAgICAgICBcIk9yYW5nZSBMaWZlXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMzVdIFwiRGFlemF5ZW9uIEtvcmVhXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJvdmVyc2VhcyBpbmZsb3dcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzM3XSBcImNvbnRhY3Qgd2l0aCBwYXRpZW50XCIgICAgICAgICAgICAgICAgICAgICAgICAgIFwiZXRjXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblszOV0gXCJPbmNodW4gQ2h1cmNoXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIlN1eWVvbmctZ3UgS2luZGVyZ2FydGVuXCIgICAgICAgICAgICAgICAgICAgICAgXG5bNDFdIFwiSGFldW5kYWUtZ3UgQ2F0aG9saWMgQ2h1cmNoXCIgICAgICAgICAgICAgICAgICAgXCJKaW4tZ3UgQWNhZGVteVwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzQzXSBcIkNoZW9uZ2RvIERhZW5hbSBIb3NwaXRhbFwiICAgICAgICAgICAgICAgICAgICAgIFwiU2Vjb25kIE1pLUp1IEhvc3BpdGFsXCIgICAgICAgICAgICAgICAgICAgICAgICBcbls0NV0gXCJIYW5zYXJhbmcgQ29udmFsZXNjZW50IEhvc3BpdGFsXCIgICAgICAgICAgICAgICBcIkRhZXNpbCBDb252YWxlc2NlbnQgSG9zcGl0YWxcIiAgICAgICAgICAgICAgICAgXG5bNDddIFwiRmF0aW1hIEhvc3BpdGFsXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJHd2FuZ25ldWtzYSBUZW1wbGVcIiAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzQ5XSBcIkRvb3ItdG8tZG9vciBzYWxlcyBpbiBEYWVqZW9uXCIgICAgICAgICAgICAgICAgIFwiRHVuc2FuIEVsZWN0cm9uaWNzIFRvd25cIiAgICAgICAgICAgICAgICAgICAgICBcbls1MV0gXCJPcmFuZ2UgVG93blwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIkRyZWFtaW5nIENodXJjaFwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bNTNdIFwiS29yZWEgRm9yZXN0IEVuZ2luZWVyIEluc3RpdHV0ZVwiICAgICAgICAgICAgICAgXCJTZW9zYW4tc2kgTGFib3JhdG9yeVwiICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzU1XSBcIk1pbmlzdHJ5IG9mIE9jZWFucyBhbmQgRmlzaGVyaWVzXCIgICAgICAgICAgICAgIFwiZ3ltIGZhY2lsaXR5IGluIFNlam9uZ1wiICAgICAgICAgICAgICAgICAgICAgICBcbls1N10gXCJSaXZlciBvZiBHcmFjZSBDb21tdW5pdHkgQ2h1cmNoXCIgICAgICAgICAgICAgICBcIlVpamVvbmdidSBTdC4gTWFyeWJcIiAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bNTldIFwiQnVuZGFuZyBKZXNhZW5nIEhvc3BpdGFsXCIgICAgICAgICAgICAgICAgICAgICAgXCJMb3R0ZSBDb25mZWN0aW9uZXJ5IGxvZ2lzdGljcyBjZW50ZXJcIiAgICAgICAgIFxuWzYxXSBcIkxvcmQgR2xvcnkgQ2h1cmNoXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiU3V3b24gU2FlbmcgTXllb25nIFNhZW0gQ2h1cmNoXCIgICAgICAgICAgICAgICBcbls2M10gXCJTZW9uZ25hbSBuZWlnaGJvcnMgZ2F0aGVyaW5nXCIgICAgICAgICAgICAgICAgICBcIldvbmp1LXNpIEFwYXJ0bWVudHNcIiAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bNjVdIFwiR29lc2FuLWd1biBKYW5neWVvbi1teWVvblwiICAgICAgICAgICAgICAgICAgICAgXCJneW0gZmFjaWxpdHkgaW4gQ2hlb25hblwiICAgICAgICAgICAgICAgICAgICAgIFxuWzY3XSBcIkV1bnB5ZW9uZy1Cb2tzYWdvbCBjdWx0dXJlIGNlbnRlclwiICAgICAgICAgICAgIFwiQm9uZ2h3YSBQdXJldW4gTnVyc2luZyBIb21lXCIgICAgICAgICAgICAgICAgICBcbls2OV0gXCJHeWVvbmdzYW4gU2VvcmluIE51cnNpbmcgSG9tZVwiICAgICAgICAgICAgICAgICBcIlBpbGdyaW1hZ2UgdG8gSXNyYWVsXCIgICAgICAgICAgICAgICAgICAgICAgICAgXG5bNzFdIFwiWWVjaHVuLWd1blwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJNaWxhbCBTaGVsdGVyXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzczXSBcIkd5ZW9uZ3NhbiBKZWlsIFNpbHZlciBUb3duXCIgICAgICAgICAgICAgICAgICAgIFwiR3llb25nc2FuIENoYW0gSm9ldW4gQ29tbXVuaXR5IENlbnRlclwiICAgICAgICBcbls3NV0gXCJHdW1pIEVsaW0gQ2h1cmNoXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIkdlb2NoYW5nIENodXJjaFwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bNzddIFwiV2luZ3MgVG93ZXJcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXCJHZW9jaGFuZy1ndW4gV29vbmd5YW5nLW15ZW9uXCIgICAgICAgICAgICAgICAgIFxuWzc5XSBcIkhhbm1hZXVtIENoYW5nd29uIEhvc3BpdGFsXCIgICAgICAgICAgICAgICAgICAgIFwiQ2hhbmdueWVvbmcgQ29pbiBLYXJhb2tlXCIgICAgICAgICAgICAgICAgICAgICBcbls4MV0gXCJTb3NvIFNlb3dvblwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIn0= -->
+<pre><code> [1] &quot;Itaewon Clubs&quot;                                 &quot;Richway&quot;                                      
+ [3] &quot;Guro-gu Call Center&quot;                           &quot;Yangcheon Table Tennis Club&quot;                  
+ [5] &quot;Day Care Center&quot;                               &quot;Manmin Central Church&quot;                        
+ [7] &quot;SMR Newly Planted Churches Group&quot;              &quot;Dongan Church&quot;                                
+ [9] &quot;Coupang Logistics Center&quot;                      &quot;Wangsung Church&quot;                              
+[11] &quot;Eunpyeong St. Mary&#39;s Hospital&quot;                 &quot;Seongdong-gu APT&quot;                             
+[13] &quot;Jongno Community Center&quot;                       &quot;Samsung Medical Center&quot;                       
+[15] &quot;Jung-gu Fashion Company&quot;                       &quot;Yeonana News Class&quot;                           
+[17] &quot;Korea Campus Crusade of Christ&quot;                &quot;Gangnam Yeoksam-dong gathering&quot;               
+[19] &quot;Daejeon door-to-door sales&quot;                    &quot;Geumcheon-gu rice milling machine manufacture&quot;
+[21] &quot;Shincheonji Church&quot;                            &quot;Guri Collective Infection&quot;                    
+[23] &quot;KB Life Insurance&quot;                             &quot;Yeongdeungpo Learning Institute&quot;              
+[25] &quot;Gangnam Dongin Church&quot;                         &quot;Biblical Language study meeting&quot;              
+[27] &quot;Seocho Family&quot;                                 &quot;Anyang Gunpo Pastors Group&quot;                   
+[29] &quot;Samsung Fire &amp; Marine Insurance&quot;               &quot;SJ Investment Call Center&quot;                    
+[31] &quot;Yongin Brothers&quot;                               &quot;Seoul City Hall Station safety worker&quot;        
+[33] &quot;Uiwang Logistics Center&quot;                       &quot;Orange Life&quot;                                  
+[35] &quot;Daezayeon Korea&quot;                               &quot;overseas inflow&quot;                              
+[37] &quot;contact with patient&quot;                          &quot;etc&quot;                                          
+[39] &quot;Onchun Church&quot;                                 &quot;Suyeong-gu Kindergarten&quot;                      
+[41] &quot;Haeundae-gu Catholic Church&quot;                   &quot;Jin-gu Academy&quot;                               
+[43] &quot;Cheongdo Daenam Hospital&quot;                      &quot;Second Mi-Ju Hospital&quot;                        
+[45] &quot;Hansarang Convalescent Hospital&quot;               &quot;Daesil Convalescent Hospital&quot;                 
+[47] &quot;Fatima Hospital&quot;                               &quot;Gwangneuksa Temple&quot;                           
+[49] &quot;Door-to-door sales in Daejeon&quot;                 &quot;Dunsan Electronics Town&quot;                      
+[51] &quot;Orange Town&quot;                                   &quot;Dreaming Church&quot;                              
+[53] &quot;Korea Forest Engineer Institute&quot;               &quot;Seosan-si Laboratory&quot;                         
+[55] &quot;Ministry of Oceans and Fisheries&quot;              &quot;gym facility in Sejong&quot;                       
+[57] &quot;River of Grace Community Church&quot;               &quot;Uijeongbu St. Maryb&quot;                          
+[59] &quot;Bundang Jesaeng Hospital&quot;                      &quot;Lotte Confectionery logistics center&quot;         
+[61] &quot;Lord Glory Church&quot;                             &quot;Suwon Saeng Myeong Saem Church&quot;               
+[63] &quot;Seongnam neighbors gathering&quot;                  &quot;Wonju-si Apartments&quot;                          
+[65] &quot;Goesan-gun Jangyeon-myeon&quot;                     &quot;gym facility in Cheonan&quot;                      
+[67] &quot;Eunpyeong-Boksagol culture center&quot;             &quot;Bonghwa Pureun Nursing Home&quot;                  
+[69] &quot;Gyeongsan Seorin Nursing Home&quot;                 &quot;Pilgrimage to Israel&quot;                         
+[71] &quot;Yechun-gun&quot;                                    &quot;Milal Shelter&quot;                                
+[73] &quot;Gyeongsan Jeil Silver Town&quot;                    &quot;Gyeongsan Cham Joeun Community Center&quot;        
+[75] &quot;Gumi Elim Church&quot;                              &quot;Geochang Church&quot;                              
+[77] &quot;Wings Tower&quot;                                   &quot;Geochang-gun Woongyang-myeon&quot;                 
+[79] &quot;Hanmaeum Changwon Hospital&quot;                    &quot;Changnyeong Coin Karaoke&quot;                     
+[81] &quot;Soso Seowon&quot;                                  </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FzZV9kdFssIHVuaXF1ZShwcm92aW5jZSldXG5gYGAifQ== -->
+<pre class="r"><code>case_dt[, unique(province)]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIlNlb3VsXCIgICAgICAgICAgICAgXCJCdXNhblwiICAgICAgICAgICAgIFwiRGFlZ3VcIiAgICAgICAgICAgICBcIkd3YW5nanVcIiAgICAgICAgICAgXCJJbmNoZW9uXCIgICAgICAgICAgIFwiRGFlamVvblwiICAgICAgICAgIFxuIFs3XSBcIlVsc2FuXCIgICAgICAgICAgICAgXCJTZWpvbmdcIiAgICAgICAgICAgIFwiR3llb25nZ2ktZG9cIiAgICAgICBcIkdhbmd3b24tZG9cIiAgICAgICAgXCJDaHVuZ2NoZW9uZ2J1ay1kb1wiIFwiQ2h1bmdjaGVvbmduYW0tZG9cIlxuWzEzXSBcIkplb2xsYWJ1ay1kb1wiICAgICAgXCJKZW9sbGFuYW0tZG9cIiAgICAgIFwiR3llb25nc2FuZ2J1ay1kb1wiICBcIkd5ZW9uZ3NhbmduYW0tZG9cIiAgXCJKZWp1LWRvXCIgICAgICAgICAgXG4ifQ== -->
+<pre><code> [1] &quot;Seoul&quot;             &quot;Busan&quot;             &quot;Daegu&quot;             &quot;Gwangju&quot;           &quot;Incheon&quot;           &quot;Daejeon&quot;          
+ [7] &quot;Ulsan&quot;             &quot;Sejong&quot;            &quot;Gyeonggi-do&quot;       &quot;Gangwon-do&quot;        &quot;Chungcheongbuk-do&quot; &quot;Chungcheongnam-do&quot;
+[13] &quot;Jeollabuk-do&quot;      &quot;Jeollanam-do&quot;      &quot;Gyeongsangbuk-do&quot;  &quot;Gyeongsangnam-do&quot;  &quot;Jeju-do&quot;          </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3JvdXBfdnNfc2luZ2xlID0gY2FzZV9kdFssIC4oY2FzZXMgPSBzdW0oY29uZmlybWVkKSksIGJ5ID0gZ3JvdXBdXG5ncm91cF92c19zaW5nbGVcbmBgYCJ9 -->
+<pre class="r"><code>group_vs_single = case_dt[, .(cases = sum(confirmed)), by = group]
+group_vs_single</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjIsIm5jb2wiOjJ9LCJyZGYiOiJINHNJQUFBQUFBQUFCbDFRelE3Q0lBenVkR2drOFNmeDdodTR4UGdFUmk5ZTliSXJUcHlMRXhiR29rZmZ4eGZ5YVRiTEJMTkFBbTIvZnUxSGU5akZheHBUQU9oRGlMZFAwQVd5T1c3M2U0Q3doMEdBaVpHeFR5VE4wVEVndFRhQTN4bi80c1ViM1k5WE9GTHlFUWwyNTZVanZ2QnBtcWIyaUNUSldXbElzdzVJejB5ejZLS3czcWU3bnJOVzNJS3BrbFh4YjhqS2x1RXJEV1doTXlrdzFUTVRFVTh6VUI0d3JZUVJPeStUYXlWdXk1WGRRSGY2d0c2azR4dkpzTEd0aUcwMTRDTE5CSGMvek5tSjV6YVk0S0xhbWFKQ1pVSzdCU0JhUmxwcTVuZzBrYmxEMnRtZy9nSmM5SXE1eUFFQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["group"],"name":[1],"type":["lgl"],"align":["right"]},{"label":["cases"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"TRUE","2":"7851"},{"1":"FALSE","2":"3544"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[2]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2l0eV93aXNlX2Nhc2VzID0gY2FzZV9kdFssIC4oY2FzZXMgPSBzdW0oY29uZmlybWVkKSksIGJ5ID0gY2l0eV1bb3JkZXIoY2FzZXMsIGRlY3JlYXNpbmcgPSBUKV1cbmNpdHlfd2lzZV9jYXNlc1xuYGBgIn0= -->
+<pre class="r"><code>city_wise_cases = case_dt[, .(cases = sum(confirmed)), by = city][order(cases, decreasing = T)]
+city_wise_cases</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjQ4LCJuY29sIjoyfSwicmRmIjoiSDRzSUFBQUFBQUFBQm1WVXk0N1RNQlIxSCtrakxkTVpab0hZelFJSkVMUkN3eGZNTktoTUpWZ1FJYVliSkRmMUpHbFR1MHBpbGU3WXMwWXMrUmIrZ0MrYWNwdzRFeWNzVHVLYzNOZTUxL1luNS9hdGZXc1RRbHFrRGJRc0xJbDE1VTV2YmdocE4vSFJ3SSsrZW4rRDBUa1dpandGM3VnZm5ZOTBPL1psWVRiV2k5RmRMTFlYSWcxWWZPR0Y2VUhUUTRkR0NSUGNod3N2SXJoTWxCSDZzejNsZEZNUzlnTG1DZVVsMDUzSjJQQVlUZ01WY1NXTW1IYkd3U2tKQzZ2WmdlbEFEOXpBVlJTSGdKSzZCaFBzcVJucldub3FtaEhyYzdoV25rdHBjQXZLL2R5dUxOVEpsUmJTSExHc0VQYUNlWUhrWmk0bks0aVZOdWpPR2x3UjRvb2ZrTWVvZHhxRWtTODJSb3llSy9kbXRkMjVyQ1NkMFZ4ejJjQVpFMTVBSzBONXBBcFpVYmFWaHA3K1hGVm50djZkNUxzRHE0Z2F1dmswcWprRnkwZkl5eGx1dzdMR1Bwd3FvK25OUTc2V0ZaMG9zS0pybEZIOFVOdE9VQ08zdFVFTTNsTW0rY3JzcXlyelAzMnVhb1NoejNabFRWMEhkWlZmdlMraVV1Vm9rV2xITG45bmhsRjdveXJ2ZzZ5MEl4dEtrcDhETkQ4N1grVHNOeUVuTDNFUS8rQmc0VTErQVQrQkh4cDd3QWM4NEN2Z0FGUGdFcGdBcjRGWHdBdmd1WUZud0ZQZ0NmQlk0MHpqUk9jZnFLcFVUelM2R2gwTnkwQmJvNldoN2doU3UwRDZzZGhQc08xWW9oTTB2K054UEI3LzFnd3RMNkpKb20rWmdyUlhOS1dUdXhqK2RmTWk1bW1XT0NmYnhwVmplVFRKRE81cm5sMnhTMFBCOGF0NXJvV1lLUnR4alJoSnJuS3R4dXJNYnNhWHVrR05YR3ltcVpFUDdtSGR6Rk8yanpxVVZld2l4djJRczZMQ2lDNVpwRDlPMEtkTTBtUVhoend0OUlOTkpxbElhV0ZuZXlJcW1Fd2J1ZjhIemU1K0s4OEZBQUE9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["city"],"name":[1],"type":["chr"],"align":["left"]},{"label":["cases"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"Nam-gu","2":"4511"},{"1":"-","2":"3625"},{"1":"from other city","2":"1217"},{"1":"Dalseong-gun","2":"297"},{"1":"Seo-gu","2":"151"},{"1":"Gwanak-gu","2":"149"},{"1":"Yongsan-gu","2":"139"},{"1":"Guro-gu","2":"139"},{"1":"Cheongdo-gun","2":"119"},{"1":"Cheonan-si","2":"103"},{"1":"Gyeongsan-si","2":"99"},{"1":"Seongnam-si","2":"94"},{"1":"Bonghwa-gun","2":"68"},{"1":"Bucheon-si","2":"67"},{"1":"Uijeongbu-si","2":"50"},{"1":"Yangcheon-gu","2":"46"},{"1":"Dong-gu","2":"44"},{"1":"Dobong-gu","2":"43"},{"1":"Yechun-gun","2":"40"},{"1":"Dongnae-gu","2":"39"},{"1":"Sejong","2":"39"},{"1":"Anyang-si","2":"39"},{"1":"Chilgok-gun","2":"36"},{"1":"Suwon-si","2":"25"},{"1":"Jung-gu","2":"23"},{"1":"Gangnam-gu","2":"18"},{"1":"Geochang-gun","2":"18"},{"1":"Dongdaemun-gu","2":"17"},{"1":"Jongno-gu","2":"17"},{"1":"Eunpyeong-gu","2":"14"},{"1":"Seongdong-gu","2":"13"},{"1":"Goesan-gun","2":"11"},{"1":"Gumi-si","2":"10"},{"1":"Seosan-si","2":"9"},{"1":"Jinju-si","2":"9"},{"1":"Changwon-si","2":"7"},{"1":"Changnyeong-gun","2":"7"},{"1":"Geumcheon-gu","2":"6"},{"1":"Haeundae-gu","2":"6"},{"1":"Seodaemun-gu","2":"5"},{"1":"Seocho-gu","2":"5"},{"1":"Suyeong-gu","2":"5"},{"1":"Jin-gu","2":"4"},{"1":"Wonju-si","2":"4"},{"1":"Yeongdeungpo-gu","2":"3"},{"1":"Yangsan-si","2":"3"},{"1":"Muan-gun","2":"2"},{"1":"Gangseo-gu","2":"0"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[48]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="patient" class="section level3">
+<h3>PATIENT</h3>
+<p>1.patient_id: the ID of the patient</p>
+<ul>
+<li>patient_id(10) = region_code(5) + patient_number(5)</li>
+<li>You can check the region_code in ‘Region.csv’</li>
+<li>There are two types of the patient_number
+<ol style="list-style-type: decimal">
+<li>local_num: The number given by the local government.</li>
+<li>global_num: The number given by the KCDC</li>
+</ol></li>
+</ul>
+<p>2.sex: the sex of the patient</p>
+<p>3.age: the age of the patient</p>
+<ul>
+<li>0s: 0 ~ 9</li>
+<li>10s: 10 ~ 19 …</li>
+<li>90s: 90 ~ 99</li>
+<li>100s: 100 ~ 109</li>
+</ul>
+<p>4.country: the country of the patient</p>
+<p>5.province: the province of the patient</p>
+<p>6.city: the city of the patient</p>
+<p>7.infection_case: the case of infection</p>
+<p>8.infected_by: the ID of who infected the patient</p>
+<ul>
+<li>This column refers to the ‘patient_id’ column.</li>
+</ul>
+<p>9.contact_number: the number of contacts with people</p>
+<p>10.symptom_onset_date: the date of symptom onset</p>
+<p>11.confirmed_date: the date of being confirmed</p>
+<p>12.released_date: the date of being released</p>
+<p>13.deceased_date: the date of being deceased</p>
+<p>14.state: isolated / released / deceased</p>
+<ul>
+<li>isolated: being isolated in the hospital</li>
+<li>released: being released from the hospital</li>
+<li>deceased: being deceased</li>
+</ul>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyhwaW5mb19kdClcbmBgYCJ9 -->
+<pre class="r"><code>View(pinfo_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChwaW5mb19kdClcbmBgYCJ9 -->
+<pre class="r"><code>head(pinfo_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjE0fSwicmRmIjoiSDRzSUFBQUFBQUFBQnExVnZXN2JNQkNXSmN1dVZkZ3AyajZBWDhDR2Y1SUdSYWVpQVF5bjZOSXMyUVNhb2hYQkVpbVFWQnh2QVRwMDZkYXRqOVJINmhEM2FKR3lwQmdGNGxUUTRUNStQSDZramp6cTY4WDExTHYyTE10eXJDYVk0d0swM0k5WG4rWnp5MnJhMEdoQVIwZjVPd2g2QTZBSEhzeHFxZEFQdjM0M3RMZTFkN1J2YXU5cTM2b0p1amhHUWdCNFZTSTdFWlVrSlB6ZEtUUWVkR2RMZHpZVEZKTW40TmFTSEdoVk5aMnprVEJ3dW9jbGRuSVFxb0Nxa3Z1WmNZS2UzNmlwWGhHV3hjOXZWRlc5R2FLaElHd1FacHA1ZVpuUmtBSzdwenFYREtoU1RQc0xTc3REUUptR2kyeDFjRWgxd2hOMlM3Z2dTUFFqdW96Wit0LzBXOHlvUkZqMjE1Rzg2YWRJUm9USzQ0Y2M3cXN1MEtwNWJ6SWF3UXZQdU40ekh1bG44b2laMWxUdDh6T0Rwa2JISHArYmtucHZnRkd5VDBIQjZlYlZOVnZkQTdqZlRUMWplNnlxeU43cW1XeXp6Zk1MSklzaTJPRmRBUlZpY0FSbW9tUXl0K1BFTm1BL3diNkRmUVA3a2VNanhNeG4xZTJKWXBXc3YrQWtoZ05DZ3YvZXJ0NWdIYzdXUTRvU29xNEM5VFcyV3ZsMnUvMVRXNzBaNEFWSW91R1N3NUQ2Wldoa1ZIalBoT3VqNmtkbUpZNGdkd2FpME9TaGpWbEdKZCtZNWFhYzNVWVVGMm5Da1RSOVBTZ2FnbVhFcUkvaGkwd2w1eXdKL0VVUnFHdkdwMW15SUZ5enI4VW1TU1ZMZkVZRmtYNnczd3NWdjR4NEFob2x0bXN5VnlFRGdoK1JycERGWmxZeTAyYXBXaTdreGxaL0g3ZVcwZ2F2RVNjWlZia01CdmdtbzZ2QlJPVngxNTAvWFkxYkpkekxwMnlhN1hMTkg0UFFNS0xGQ21PMElPWlc3Y0hXNzdac21QS291R2c4WU1WUU1vbE1uSWRaYkpqOG9ENzhCVUozdUFWMEJ3QUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["patient_id"],"name":[1],"type":["S3: integer64"],"align":["right"]},{"label":["sex"],"name":[2],"type":["chr"],"align":["left"]},{"label":["age"],"name":[3],"type":["chr"],"align":["left"]},{"label":["country"],"name":[4],"type":["chr"],"align":["left"]},{"label":["province"],"name":[5],"type":["chr"],"align":["left"]},{"label":["city"],"name":[6],"type":["chr"],"align":["left"]},{"label":["infection_case"],"name":[7],"type":["chr"],"align":["left"]},{"label":["infected_by"],"name":[8],"type":["chr"],"align":["left"]},{"label":["contact_number"],"name":[9],"type":["chr"],"align":["left"]},{"label":["symptom_onset_date"],"name":[10],"type":["S3: IDate"],"align":["right"]},{"label":["confirmed_date"],"name":[11],"type":["S3: IDate"],"align":["right"]},{"label":["released_date"],"name":[12],"type":["S3: IDate"],"align":["right"]},{"label":["deceased_date"],"name":[13],"type":["S3: IDate"],"align":["right"]},{"label":["state"],"name":[14],"type":["chr"],"align":["left"]}],"data":[{"1":"1000000001","2":"male","3":"50s","4":"Korea","5":"Seoul","6":"Gangseo-gu","7":"overseas inflow","8":"","9":"75","10":"2020-01-22","11":"2020-01-23","12":"2020-02-05","13":"<NA>","14":"released"},{"1":"1000000002","2":"male","3":"30s","4":"Korea","5":"Seoul","6":"Jungnang-gu","7":"overseas inflow","8":"","9":"31","10":"<NA>","11":"2020-01-30","12":"2020-03-02","13":"<NA>","14":"released"},{"1":"1000000003","2":"male","3":"50s","4":"Korea","5":"Seoul","6":"Jongno-gu","7":"contact with patient","8":"2002000001","9":"17","10":"<NA>","11":"2020-01-30","12":"2020-02-19","13":"<NA>","14":"released"},{"1":"1000000004","2":"male","3":"20s","4":"Korea","5":"Seoul","6":"Mapo-gu","7":"overseas inflow","8":"","9":"9","10":"2020-01-26","11":"2020-01-30","12":"2020-02-15","13":"<NA>","14":"released"},{"1":"1000000005","2":"female","3":"20s","4":"Korea","5":"Seoul","6":"Seongbuk-gu","7":"contact with patient","8":"1000000002","9":"2","10":"<NA>","11":"2020-01-31","12":"2020-02-24","13":"<NA>","14":"released"},{"1":"1000000006","2":"female","3":"50s","4":"Korea","5":"Seoul","6":"Jongno-gu","7":"contact with patient","8":"1000000003","9":"43","10":"<NA>","11":"2020-01-31","12":"2020-02-19","13":"<NA>","14":"released"}],"options":{"columns":{"min":{},"max":[10],"total":[14]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKHBpbmZvX2R0KVxuYGBgIn0= -->
+<pre class="r"><code>str(pinfo_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2xhc3NlcyAnZGF0YS50YWJsZScgYW5kICdkYXRhLmZyYW1lJzpcdDUxNjUgb2JzLiBvZiAgMTQgdmFyaWFibGVzOlxuICQgcGF0aWVudF9pZCAgICAgICAgOmludGVnZXI2NCAxMDAwMDAwMDAxIDEwMDAwMDAwMDIgMTAwMDAwMDAwMyAxMDAwMDAwMDA0IDEwMDAwMDAwMDUgMTAwMDAwMDAwNiAxMDAwMDAwMDA3IDEwMDAwMDAwMDggLi4uIFxuICQgc2V4ICAgICAgICAgICAgICAgOiBjaHIgIFwibWFsZVwiIFwibWFsZVwiIFwibWFsZVwiIFwibWFsZVwiIC4uLlxuICQgYWdlICAgICAgICAgICAgICAgOiBjaHIgIFwiNTBzXCIgXCIzMHNcIiBcIjUwc1wiIFwiMjBzXCIgLi4uXG4gJCBjb3VudHJ5ICAgICAgICAgICA6IGNociAgXCJLb3JlYVwiIFwiS29yZWFcIiBcIktvcmVhXCIgXCJLb3JlYVwiIC4uLlxuICQgcHJvdmluY2UgICAgICAgICAgOiBjaHIgIFwiU2VvdWxcIiBcIlNlb3VsXCIgXCJTZW91bFwiIFwiU2VvdWxcIiAuLi5cbiAkIGNpdHkgICAgICAgICAgICAgIDogY2hyICBcIkdhbmdzZW8tZ3VcIiBcIkp1bmduYW5nLWd1XCIgXCJKb25nbm8tZ3VcIiBcIk1hcG8tZ3VcIiAuLi5cbiAkIGluZmVjdGlvbl9jYXNlICAgIDogY2hyICBcIm92ZXJzZWFzIGluZmxvd1wiIFwib3ZlcnNlYXMgaW5mbG93XCIgXCJjb250YWN0IHdpdGggcGF0aWVudFwiIFwib3ZlcnNlYXMgaW5mbG93XCIgLi4uXG4gJCBpbmZlY3RlZF9ieSAgICAgICA6IGNociAgXCJcIiBcIlwiIFwiMjAwMjAwMDAwMVwiIFwiXCIgLi4uXG4gJCBjb250YWN0X251bWJlciAgICA6IGNociAgXCI3NVwiIFwiMzFcIiBcIjE3XCIgXCI5XCIgLi4uXG4gJCBzeW1wdG9tX29uc2V0X2RhdGU6IElEYXRlLCBmb3JtYXQ6IFwiMjAyMC0wMS0yMlwiIE5BIE5BIFwiMjAyMC0wMS0yNlwiIC4uLlxuICQgY29uZmlybWVkX2RhdGUgICAgOiBJRGF0ZSwgZm9ybWF0OiBcIjIwMjAtMDEtMjNcIiBcIjIwMjAtMDEtMzBcIiBcIjIwMjAtMDEtMzBcIiBcIjIwMjAtMDEtMzBcIiAuLi5cbiAkIHJlbGVhc2VkX2RhdGUgICAgIDogSURhdGUsIGZvcm1hdDogXCIyMDIwLTAyLTA1XCIgXCIyMDIwLTAzLTAyXCIgXCIyMDIwLTAyLTE5XCIgXCIyMDIwLTAyLTE1XCIgLi4uXG4gJCBkZWNlYXNlZF9kYXRlICAgICA6IElEYXRlLCBmb3JtYXQ6IE5BIE5BIE5BIE5BIC4uLlxuICQgc3RhdGUgICAgICAgICAgICAgOiBjaHIgIFwicmVsZWFzZWRcIiBcInJlbGVhc2VkXCIgXCJyZWxlYXNlZFwiIFwicmVsZWFzZWRcIiAuLi5cbiAtIGF0dHIoKiwgXCIuaW50ZXJuYWwuc2VsZnJlZlwiKT08ZXh0ZXJuYWxwdHI+IFxuIn0= -->
+<pre><code>Classes &#39;data.table&#39; and &#39;data.frame&#39;:  5165 obs. of  14 variables:
+ $ patient_id        :integer64 1000000001 1000000002 1000000003 1000000004 1000000005 1000000006 1000000007 1000000008 ... 
+ $ sex               : chr  &quot;male&quot; &quot;male&quot; &quot;male&quot; &quot;male&quot; ...
+ $ age               : chr  &quot;50s&quot; &quot;30s&quot; &quot;50s&quot; &quot;20s&quot; ...
+ $ country           : chr  &quot;Korea&quot; &quot;Korea&quot; &quot;Korea&quot; &quot;Korea&quot; ...
+ $ province          : chr  &quot;Seoul&quot; &quot;Seoul&quot; &quot;Seoul&quot; &quot;Seoul&quot; ...
+ $ city              : chr  &quot;Gangseo-gu&quot; &quot;Jungnang-gu&quot; &quot;Jongno-gu&quot; &quot;Mapo-gu&quot; ...
+ $ infection_case    : chr  &quot;overseas inflow&quot; &quot;overseas inflow&quot; &quot;contact with patient&quot; &quot;overseas inflow&quot; ...
+ $ infected_by       : chr  &quot;&quot; &quot;&quot; &quot;2002000001&quot; &quot;&quot; ...
+ $ contact_number    : chr  &quot;75&quot; &quot;31&quot; &quot;17&quot; &quot;9&quot; ...
+ $ symptom_onset_date: IDate, format: &quot;2020-01-22&quot; NA NA &quot;2020-01-26&quot; ...
+ $ confirmed_date    : IDate, format: &quot;2020-01-23&quot; &quot;2020-01-30&quot; &quot;2020-01-30&quot; &quot;2020-01-30&quot; ...
+ $ released_date     : IDate, format: &quot;2020-02-05&quot; &quot;2020-03-02&quot; &quot;2020-02-19&quot; &quot;2020-02-15&quot; ...
+ $ deceased_date     : IDate, format: NA NA NA NA ...
+ $ state             : chr  &quot;released&quot; &quot;released&quot; &quot;released&quot; &quot;released&quot; ...
+ - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGluZm9fZHRbLCB1bmlxdWUoYWdlKV1cbmBgYCJ9 -->
+<pre class="r"><code>pinfo_dt[, unique(age)]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIjUwc1wiICBcIjMwc1wiICBcIjIwc1wiICBcIjYwc1wiICBcIjgwc1wiICBcIjcwc1wiICBcIjQwc1wiICBcIjEwc1wiICBcIjkwc1wiICBcIjBzXCIgICBcIlwiICAgICBcIjEwMHNcIlxuIn0= -->
+<pre><code> [1] &quot;50s&quot;  &quot;30s&quot;  &quot;20s&quot;  &quot;60s&quot;  &quot;80s&quot;  &quot;70s&quot;  &quot;40s&quot;  &quot;10s&quot;  &quot;90s&quot;  &quot;0s&quot;   &quot;&quot;     &quot;100s&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="policy" class="section level3">
+<h3>POLICY</h3>
+<p>1.policy_id: the ID of the policy</p>
+<p>2.country: the country that implemented the policy</p>
+<p>3.type: the type of the policy</p>
+<p>4.gov_policy: the policy of the government</p>
+<p>5.detail: the detail of the policy</p>
+<p>6.start_date: the start date of the policy</p>
+<p>7.end_date: the end date of the policy</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyhwb2xpY3lfZHQpXG5gYGAifQ== -->
+<pre class="r"><code>View(policy_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChwb2xpY3lfZHQpXG5gYGAifQ== -->
+<pre class="r"><code>head(policy_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjd9LCJyZGYiOiJINHNJQUFBQUFBQUFCc1ZVUVUvYk1CUjJRME1oRTEwbHppQWZ5NEZLalAwQlJpV0lRQUxCcFR0Vlh2S2FXblB0ekhHQTNqakRQK1pBZVhIc3JzMTJZTnFCdzVmWW45LzcvRDduT1RmRDBYRTBpZ2doRzZTTjJBaHhTTUtUMjlNNEpxUWQ0S1NGQzl2Vit3R0RkbkhRUWV3Z051MGlJWUhOeHVncTAvRTkrNjRUd3d1bGdmMy9wS0Y2SWtDYmY1dDhpbWN6bm1sbXVKSi9vOVozMkkvbEJCSmNLQXM2NUFXd0FxaFZvNWR3QitMRG92WnVjMGc0RTNTbGRIcXRWUUpwcWVGOVFldE91MWFlSHRIK04xSENnV043TmZ1RjlyK0RFT3Erd1IvVC9wVm1NbHZHNzlUOFY5cS9nZFNUMFVTckdUMmRjdW0vWnRjeTUwcG05QUlmMkR1dW1jNUdDSTc0aFhoR1lNT2RQVGE2TUV3RUt3cFhmK0RKZU1pTWQ5NjJZMEplVjVTbmlCenhoSExFbzFZT0Z1OFVXeXRqVzZ2N2dXUXpLTnhsQ0NyRnhXTHgwbEQxQ1ZIS0RCdE1OS1kwSFhtWm5yMWJUajlYZ2lmek1VOGQwVWxVS1kyZSs3ck1QUGMxUnBtNkc5ZnhqdGxNd1REdSt5VXFETk5tblA1MnRRVXlyZWQvT3V1b3ZPb1ZMQ2pZZFJkNjFVZExONGpQcGF3TXBJZkp0SlEvRDQrcURkMlBnYml6YWJtZmdoOTM2aTNiL294Q1h6YklqRXRmWkNqWWoyWFBkL0c4N1RrTmNzMmx2ODhSc3NYQUtNT1dYaE1sUEdPOWtkYzNVZVdyMk9NRUFBQT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["policy_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["country"],"name":[2],"type":["chr"],"align":["left"]},{"label":["type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["gov_policy"],"name":[4],"type":["chr"],"align":["left"]},{"label":["detail"],"name":[5],"type":["chr"],"align":["left"]},{"label":["start_date"],"name":[6],"type":["S3: IDate"],"align":["right"]},{"label":["end_date"],"name":[7],"type":["S3: IDate"],"align":["right"]}],"data":[{"1":"1","2":"Korea","3":"Alert","4":"Infectious Disease Alert Level","5":"Level 1 (Blue)","6":"2020-01-03","7":"2020-01-19"},{"1":"2","2":"Korea","3":"Alert","4":"Infectious Disease Alert Level","5":"Level 2 (Yellow)","6":"2020-01-20","7":"2020-01-27"},{"1":"3","2":"Korea","3":"Alert","4":"Infectious Disease Alert Level","5":"Level 3 (Orange)","6":"2020-01-28","7":"2020-02-22"},{"1":"4","2":"Korea","3":"Alert","4":"Infectious Disease Alert Level","5":"Level 4 (Red)","6":"2020-02-23","7":"<NA>"},{"1":"5","2":"Korea","3":"Immigration","4":"Special Immigration Procedure","5":"from China","6":"2020-02-04","7":"<NA>"},{"1":"6","2":"Korea","3":"Immigration","4":"Special Immigration Procedure","5":"from Hong Kong","6":"2020-02-12","7":"<NA>"}],"options":{"columns":{"min":{},"max":[10],"total":[7]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKHBvbGljeV9kdClcbmBgYCJ9 -->
+<pre class="r"><code>str(policy_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2xhc3NlcyAnZGF0YS50YWJsZScgYW5kICdkYXRhLmZyYW1lJzpcdDYxIG9icy4gb2YgIDcgdmFyaWFibGVzOlxuICQgcG9saWN5X2lkIDogaW50ICAxIDIgMyA0IDUgNiA3IDggOSAxMCAuLi5cbiAkIGNvdW50cnkgICA6IGNociAgXCJLb3JlYVwiIFwiS29yZWFcIiBcIktvcmVhXCIgXCJLb3JlYVwiIC4uLlxuICQgdHlwZSAgICAgIDogY2hyICBcIkFsZXJ0XCIgXCJBbGVydFwiIFwiQWxlcnRcIiBcIkFsZXJ0XCIgLi4uXG4gJCBnb3ZfcG9saWN5OiBjaHIgIFwiSW5mZWN0aW91cyBEaXNlYXNlIEFsZXJ0IExldmVsXCIgXCJJbmZlY3Rpb3VzIERpc2Vhc2UgQWxlcnQgTGV2ZWxcIiBcIkluZmVjdGlvdXMgRGlzZWFzZSBBbGVydCBMZXZlbFwiIFwiSW5mZWN0aW91cyBEaXNlYXNlIEFsZXJ0IExldmVsXCIgLi4uXG4gJCBkZXRhaWwgICAgOiBjaHIgIFwiTGV2ZWwgMSAoQmx1ZSlcIiBcIkxldmVsIDIgKFllbGxvdylcIiBcIkxldmVsIDMgKE9yYW5nZSlcIiBcIkxldmVsIDQgKFJlZClcIiAuLi5cbiAkIHN0YXJ0X2RhdGU6IElEYXRlLCBmb3JtYXQ6IFwiMjAyMC0wMS0wM1wiIFwiMjAyMC0wMS0yMFwiIFwiMjAyMC0wMS0yOFwiIFwiMjAyMC0wMi0yM1wiIC4uLlxuICQgZW5kX2RhdGUgIDogSURhdGUsIGZvcm1hdDogXCIyMDIwLTAxLTE5XCIgXCIyMDIwLTAxLTI3XCIgXCIyMDIwLTAyLTIyXCIgTkEgLi4uXG4gLSBhdHRyKCosIFwiLmludGVybmFsLnNlbGZyZWZcIik9PGV4dGVybmFscHRyPiBcbiJ9 -->
+<pre><code>Classes &#39;data.table&#39; and &#39;data.frame&#39;:  61 obs. of  7 variables:
+ $ policy_id : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ country   : chr  &quot;Korea&quot; &quot;Korea&quot; &quot;Korea&quot; &quot;Korea&quot; ...
+ $ type      : chr  &quot;Alert&quot; &quot;Alert&quot; &quot;Alert&quot; &quot;Alert&quot; ...
+ $ gov_policy: chr  &quot;Infectious Disease Alert Level&quot; &quot;Infectious Disease Alert Level&quot; &quot;Infectious Disease Alert Level&quot; &quot;Infectious Disease Alert Level&quot; ...
+ $ detail    : chr  &quot;Level 1 (Blue)&quot; &quot;Level 2 (Yellow)&quot; &quot;Level 3 (Orange)&quot; &quot;Level 4 (Red)&quot; ...
+ $ start_date: IDate, format: &quot;2020-01-03&quot; &quot;2020-01-20&quot; &quot;2020-01-28&quot; &quot;2020-02-23&quot; ...
+ $ end_date  : IDate, format: &quot;2020-01-19&quot; &quot;2020-01-27&quot; &quot;2020-02-22&quot; NA ...
+ - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Different policies</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9saWN5X2R0WywgdW5pcXVlKGdvdl9wb2xpY3kpXVxuYGBgIn0= -->
+<pre class="r"><code>policy_dt[, unique(gov_policy)]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcIkluZmVjdGlvdXMgRGlzZWFzZSBBbGVydCBMZXZlbFwiICAgICAgICAgICAgICAgIFwiU3BlY2lhbCBJbW1pZ3JhdGlvbiBQcm9jZWR1cmVcIiAgICAgICAgICAgICAgICBcbiBbM10gXCJNYW5kYXRvcnkgMTQtZGF5IFNlbGYtUXVhcmFudGluZVwiICAgICAgICAgICAgICBcIk1hbmRhdG9yeSBTZWxmLVF1YXJhbnRpbmUgJiBEaWFnb25vc3RpYyBUZXN0c1wiXG4gWzVdIFwiRW1lcmdlbmN5IFVzZSBBdXRob3JpemF0aW9uIG9mIERpYWdub3N0aWMgS2l0XCIgXCJEcml2ZS1UaHJvdWdoIFNjcmVlbmluZyBDZW50ZXJcIiAgICAgICAgICAgICAgIFxuIFs3XSBcIk1hc2sgRGlzdHJpYnV0aW9uXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiU29jaWFsIERpc3RhbmNpbmcgQ2FtcGFpZ25cIiAgICAgICAgICAgICAgICAgICBcbiBbOV0gXCJUaGFua3MgdG8gQ2hhbGxlbmdlIGtvcmVhXCIgICAgICAgICAgICAgICAgICAgICBcIlNjaG9vbCBDbG9zdXJlXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMTFdIFwiU2Nob29sIE9wZW5pbmcgRGVsYXlcIiAgICAgICAgICAgICAgICAgICAgICAgICAgXCJTY2hvb2wgT3BlbmluZyB3aXRoIE9ubGluZSBDbGFzc1wiICAgICAgICAgICAgIFxuWzEzXSBcIk9wZW4gRGF0YVwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiT3BlbiBBUElcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblsxNV0gXCJTZWxmLURpYWdub3NpcyBBcHBcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIlNlbGYtUXVhcmFudGluZSBTYWZldHkgUHJvdGVjdGlvbiBBcHBcIiAgICAgICAgXG5bMTddIFwiRWxlY3Ryb25pYyBXcmlzdGJhbmRzXCIgICAgICAgICAgICAgICAgICAgICAgICAgXCJDbG9zZSBiYXJzIGFuZCBjbHVic1wiICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzE5XSBcImxvY2FsIGdvdmVybm1lbnQgQWRtaW5pc3RyYXRpdmUgb3JkZXJzXCIgICAgICAgIFwiQ2xvc2Uga2FyYW9rZVwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblsyMV0gXCJMb2dpc3RpY3MgY2VudGVyXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcIldlYXJpbmcgb2YgbWFza3NcIiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bMjNdIFwiS0ktUGFzczogS29yZWEgSW50ZXJuZXQgLSBQYXNzXCIgICAgICAgICAgICAgICAgXCJFeHRlbmRzIFRpZ2h0ZW5lZCBRdWFyYW50aW5lIE1lYXN1cmVzXCIgICAgICAgIFxuIn0= -->
+<pre><code> [1] &quot;Infectious Disease Alert Level&quot;                &quot;Special Immigration Procedure&quot;                
+ [3] &quot;Mandatory 14-day Self-Quarantine&quot;              &quot;Mandatory Self-Quarantine &amp; Diagonostic Tests&quot;
+ [5] &quot;Emergency Use Authorization of Diagnostic Kit&quot; &quot;Drive-Through Screening Center&quot;               
+ [7] &quot;Mask Distribution&quot;                             &quot;Social Distancing Campaign&quot;                   
+ [9] &quot;Thanks to Challenge korea&quot;                     &quot;School Closure&quot;                               
+[11] &quot;School Opening Delay&quot;                          &quot;School Opening with Online Class&quot;             
+[13] &quot;Open Data&quot;                                     &quot;Open API&quot;                                     
+[15] &quot;Self-Diagnosis App&quot;                            &quot;Self-Quarantine Safety Protection App&quot;        
+[17] &quot;Electronic Wristbands&quot;                         &quot;Close bars and clubs&quot;                         
+[19] &quot;local government Administrative orders&quot;        &quot;Close karaoke&quot;                                
+[21] &quot;Logistics center&quot;                              &quot;Wearing of masks&quot;                             
+[23] &quot;KI-Pass: Korea Internet - Pass&quot;                &quot;Extends Tightened Quarantine Measures&quot;        </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHQxID0gdGltZV9kdFssIGMoXCJkYXRlXCIsIFwiY29uZmlybWVkXCIpXVxuZHQyID0gcG9saWN5X2R0WywgLihkYXRlID0gZW5kX2RhdGUsIGdvdl9wb2xpY3ksIHR5cGUsIGRldGFpbCldXG5oZWFkKGR0MSlcbmBgYCJ9 -->
+<pre class="r"><code>dt1 = time_dt[, c(&quot;date&quot;, &quot;confirmed&quot;)]
+dt2 = policy_dt[, .(date = end_date, gov_policy, type, detail)]
+head(dt1)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjJ9LCJyZGYiOiJINHNJQUFBQUFBQUFCbDFSVFUvRE1BeDEwMmFvbGZpUStCM3JaZG9QUUV4Q3ZjSmwxOUIyRUpZbVU1c0pqdnh1RGl1dnJTTm9EeSt4SFQvNzJYbmU3VGZaUGlPaW1CSWdsakJKUHJ3OEZnVlJJdUJFZUVpSCt3dEo5ekFRaks5eHI0aWVOUEFCSEFFRE5JQmRFR1ZwVk5mQnVCdkpIQ3gyeXRmc0pLTk5kQUc0TXRoemlBbXp5bW5yUG5Pcm1ycGpvdmpHMGZmOXo1UW9ldTRhQ0ZtbHZNb1BMU2hMa2FITWY1Rko5YWN4TFowOTZMYXBxMG5vakgzbFRsNDdDNzRZTmlRWGJhTjJFYmc5MjZGZnRTN2Z6L2E0M2c3U2VFN2lVU0xlUTdCNTlpU01KTG5VcXJadjJnYVYwcWpYMnJCemcvV01ZK1duVmxzZmRvQm9sM3ZuVmNqTFNtZENaUHFFeXkvQkR3YVpHQUlBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["date"],"name":[1],"type":["S3: IDate"],"align":["right"]},{"label":["confirmed"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"2020-01-20","2":"1"},{"1":"2020-01-21","2":"1"},{"1":"2020-01-22","2":"1"},{"1":"2020-01-23","2":"1"},{"1":"2020-01-24","2":"2"},{"1":"2020-01-25","2":"2"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChkdDIpXG5gYGAifQ== -->
+<pre class="r"><code>head(dt2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjR9LCJyZGYiOiJINHNJQUFBQUFBQUFCc1ZUejAvQ01CUXVZOE13QTVKNDF2U0lCMGdVL1FNUUVsMDAwY0FGVDZadVpUUjI3ZEp0SURmUC9za2VtRzgvaXJCNDBKTkwzdnI2dmEvdlIvTjFNcDRON0ptTkVLb2pFNnh1Z1l1czRYVGtPQWlaQm14cUVHaG02eHVRanNFeFlXM0Iya0RvWmdFV2duMjhBNkN0Y3RCeU9Za2ljRHBnaGdhZE1ZbHB1VEZ6SDZGTlNXcVUrS2tqNXRTTm1Vd2lQR1lSSlJIRlEwNVZqTy9wa3ZKL1k1MU1RK295d3JFVEJNeFhCUGdDUHlycFVpOVI5SGVrL1VtdHZNamZOb2M3aVgrQzlpdTA4d0h3T2U1ZTg0U2VsV2luUUM5dzk0bHlMbGNWZklDN0Q0b0lmOHR2RmZnbDdrNm9wMEY3cm1TQVJ3c21pQzZXSTdkUytQZ09maFZCTkpWYzlRVUphQ2FLVEVsR3BwbzBUVDhMb3BHV3Zlc0R0a2RpMHA4ck9GTFZsazdUeVlWWnlzbjdscGJ0eStWektEbHoxem9hcjBNZGJYZzBKb3dYMHR0TGZDREQ3QklodFpGcDNxcDBWRk1WNENnUldTdGV6MTBrNHJWM2xaWE93OFhYS3YzR2ptOFdKVTA5cmFXYm9zSm5RcmRvY2ZLeUZWNGJiaTZmdUI4cUpyUVFiRUNqZml4am9ubTJLN2xHaW1lMStRTG9DaGhsNmdNQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["date"],"name":[1],"type":["S3: IDate"],"align":["right"]},{"label":["gov_policy"],"name":[2],"type":["chr"],"align":["left"]},{"label":["type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["detail"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"2020-01-19","2":"Infectious Disease Alert Level","3":"Alert","4":"Level 1 (Blue)"},{"1":"2020-01-27","2":"Infectious Disease Alert Level","3":"Alert","4":"Level 2 (Yellow)"},{"1":"2020-02-22","2":"Infectious Disease Alert Level","3":"Alert","4":"Level 3 (Orange)"},{"1":"<NA>","2":"Infectious Disease Alert Level","3":"Alert","4":"Level 4 (Red)"},{"1":"<NA>","2":"Special Immigration Procedure","3":"Immigration","4":"from China"},{"1":"<NA>","2":"Special Immigration Procedure","3":"Immigration","4":"from Hong Kong"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9saWN5X2Nhc2VzID0gbWVyZ2UoXG4gIGR0MSxcbiAgZHQyLFxuICBieSA9IFwiZGF0ZVwiLFxuICBhbGwueCA9IFRcbilcbmhlYWQocG9saWN5X2Nhc2VzKVxuYGBgIn0= -->
+<pre class="r"><code>policy_cases = merge(
+  dt1,
+  dt2,
+  by = &quot;date&quot;,
+  all.x = T
+)
+head(policy_cases)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCcjFTelU2RFFCQWV0b0NCUkNYeE9jckYrQURHSm9hclhub3pLMnpyMm1XWHdGYnR6ZWYyMERyQVRCcTRlWkhrWS81M2RyN1pwOVg2TmwybkFMQ0FFTEdJVUlYby92bWhLQUJDZ1VhQWdhU1hYNWgwMDBkUlhxS01BUjQxNGgyeFF4aEVqYkN6d3FnMHN1dFF5UkNDbmNWS2VrVkdPT2dBUndTZGpOVlRDRUpHOGVTRTN4L2tQOWYxREFpdVp5YlNTbnFaYjFwWnF4bEhTZXMrYzR2K2ppZ1EzL2pEazM3bVpISlNObXlDK0t2T1hDYWxzeHZkMXFyaXBsdjM4ZEk0bzhzRHAvdER3K2x4cGJ6VVppUi8wdW5DTlY0N2k3MEViWDB5UzlET0hOZDcyOSt0V3BadmU3dGIzdld0YVhkQVF3WEVKZXZSMkRJOHplYUpsZDFxeTFlTWpIeFZob3dySkdxZ0lHOWFiVDNQaU40dTk4NUx6a3RMWjlnelBxempMeW4rcDVMc0FnQUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["date"],"name":[1],"type":["S3: IDate"],"align":["right"]},{"label":["confirmed"],"name":[2],"type":["int"],"align":["right"]},{"label":["gov_policy"],"name":[3],"type":["chr"],"align":["left"]},{"label":["type"],"name":[4],"type":["chr"],"align":["left"]},{"label":["detail"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"2020-01-20","2":"1","3":"NA","4":"NA","5":"NA"},{"1":"2020-01-21","2":"1","3":"NA","4":"NA","5":"NA"},{"1":"2020-01-22","2":"1","3":"NA","4":"NA","5":"NA"},{"1":"2020-01-23","2":"1","3":"NA","4":"NA","5":"NA"},{"1":"2020-01-24","2":"2","3":"NA","4":"NA","5":"NA"},{"1":"2020-01-25","2":"2","3":"NA","4":"NA","5":"NA"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9saWN5X2Nhc2VzW2RhdGUgPT0gXCIyMDIwLTAxLTI3XCIsIGNvbmZpcm1lZF1cbmBgYCJ9 -->
+<pre class="r"><code>policy_cases[date == &quot;2020-01-27&quot;, confirmed]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDRcbiJ9 -->
+<pre><code>[1] 4</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="region" class="section level3">
+<h3>REGION</h3>
+<p>1.code: the code of the region</p>
+<p>2.province: Special City / Metropolitan City / Province(-do)</p>
+<p>3.city: City(-si) / Country (-gun) / District (-gu)</p>
+<p>4.latitude: the latitude of the visit (WGS84)</p>
+<p>5.longitude: the longitude of the visit (WGS84)</p>
+<p>6.elementary_school_count: the number of elementary schools</p>
+<p>7.kindergarten_count: the number of kindergartens</p>
+<p>8.university_count: the number of universities</p>
+<p>9.academy_ratio: the ratio of academies</p>
+<p>10.elderly_population_ratio: the ratio of the elderly population</p>
+<p>11.elderly_alone_ratio: the ratio of elderly households living alone</p>
+<p>12.nursing_home_count: the number of nursing homes</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="search-trend" class="section level3">
+<h3>SEARCH TREND</h3>
+<p>1.date: YYYY-MM-DD</p>
+<p>2.cold: the search volume of ‘cold’ in Korean language</p>
+<ul>
+<li>The unit means relative value by setting the highest search volume in the period to 100.</li>
+</ul>
+<p>3.flu: the search volume of ‘flu’ in Korean language</p>
+<ul>
+<li>Same as above.</li>
+</ul>
+<p>4.pneumonia: the search volume of ‘pneumonia’ in Korean language</p>
+<ul>
+<li>Same as above.</li>
+</ul>
+<p>5.coronavirus: the search volume of ‘coronavirus’ in Korean language</p>
+<ul>
+<li>Same as above.</li>
+</ul>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyhzZWFyY2hfZHQpXG5gYGAifQ== -->
+<pre class="r"><code>View(search_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChzZWFyY2hfZHQpXG5gYGAifQ== -->
+<pre class="r"><code>head(search_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCZ3R5aVREbWl1QmlZR0JnWm1BQlltWldJSk9CMVRIWTJkT1RnWUdGQ2NoaEJFcHdndWdLb0NKaGtDeVE1Z1hTYkF3TWpndUJlQkVRTHdiaUpVQzhGSWlYb1dsa1RjNUpMQzRHTWdTQW1Ba202T21TV0pJSzViQ0EyUXdNLzRDWUQyU3kvZDdiWlp0M041KzNQeWk3WjJXbVZKbjlZUW1HNVVmWHVOc2ZpM0tiVyt6MHp2NFl6OXk1SmhGbjdZOUpiNGhmdDhjUnJtL052RGY3TjBhSDJ4OTlkL3EzNk5ZUyt6TVRyaTdkbWRScmYveDZuSUxiOFZUN3cxNm4vdWNhYzlvZnluTmVWYmw3SFZ6ZkVVV0p1aHEyUi9hblZqZzNkQVRNc1QreFoxL2krWDhiN0M5TldMM0ZMK0NZL2ZtQ3lxZnp0VmZaWCtCMVRYb3cvd1ZjWDUxcXk1ZGp6MjdaTjFscEhxOWN0dFcrMGMvNnJPbUtDUHYyWW9rL0FSN2k5ajBlV1pmdWJIU0QwV2dodzFtVVg2NlhsNWliQ2dvZFVKQXlOUUNKLy8vLy80SW9aUG9QRFRXWUJxNlV4SkpFdmJRaW9CYjBRSVlaSXdDT0lXaTRwaUNGY1hKK1RncVV6WnlXVXdwelFrRmVhbWx1Zmw1bUlsU0FPem0vS0Q4dnNTeXpxTFFZRWlVbzlyRG5GNVJrNXVjQnBaaWdhUUhGZ1l4RmFBTDhwWGtnbDZYb0ptZVU1bVhyR29JOEFaYUdBRjRvbXcySnpRcXhrdVUvbW0vWVV2UFNNL05nL21ITlNVeEt6WUZ5K0lBQkNRNEF2WUtpekx3U1dHZ0JSWXYxU3ZKTEVtSHF1SUNCQUJPQkpMZC9BS25sWmpRQ0F3QUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["date"],"name":[1],"type":["S3: IDate"],"align":["right"]},{"label":["cold"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["flu"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["pneumonia"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["coronavirus"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"2016-01-01","2":"0.11663","3":"0.05590","4":"0.15726","5":"0.00736"},{"1":"2016-01-02","2":"0.13372","3":"0.17135","4":"0.20826","5":"0.00890"},{"1":"2016-01-03","2":"0.14917","3":"0.22317","4":"0.19326","5":"0.00845"},{"1":"2016-01-04","2":"0.17463","3":"0.18626","4":"0.29008","5":"0.01145"},{"1":"2016-01-05","2":"0.17226","3":"0.15072","4":"0.24562","5":"0.01381"},{"1":"2016-01-06","2":"0.17272","3":"0.14399","4":"0.25081","5":"0.01381"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3RyKHNlYXJjaF9kdClcbmBgYCJ9 -->
+<pre class="r"><code>str(search_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2xhc3NlcyAnZGF0YS50YWJsZScgYW5kICdkYXRhLmZyYW1lJzpcdDE2NDIgb2JzLiBvZiAgNSB2YXJpYWJsZXM6XG4gJCBkYXRlICAgICAgIDogSURhdGUsIGZvcm1hdDogXCIyMDE2LTAxLTAxXCIgXCIyMDE2LTAxLTAyXCIgXCIyMDE2LTAxLTAzXCIgXCIyMDE2LTAxLTA0XCIgLi4uXG4gJCBjb2xkICAgICAgIDogbnVtICAwLjExNyAwLjEzNCAwLjE0OSAwLjE3NSAwLjE3MiAuLi5cbiAkIGZsdSAgICAgICAgOiBudW0gIDAuMDU1OSAwLjE3MTQgMC4yMjMyIDAuMTg2MyAwLjE1MDcgLi4uXG4gJCBwbmV1bW9uaWEgIDogbnVtICAwLjE1NyAwLjIwOCAwLjE5MyAwLjI5IDAuMjQ2IC4uLlxuICQgY29yb25hdmlydXM6IG51bSAgMC4wMDczNiAwLjAwODkgMC4wMDg0NSAwLjAxMTQ1IDAuMDEzODEgLi4uXG4gLSBhdHRyKCosIFwiLmludGVybmFsLnNlbGZyZWZcIik9PGV4dGVybmFscHRyPiBcbiJ9 -->
+<pre><code>Classes &#39;data.table&#39; and &#39;data.frame&#39;:  1642 obs. of  5 variables:
+ $ date       : IDate, format: &quot;2016-01-01&quot; &quot;2016-01-02&quot; &quot;2016-01-03&quot; &quot;2016-01-04&quot; ...
+ $ cold       : num  0.117 0.134 0.149 0.175 0.172 ...
+ $ flu        : num  0.0559 0.1714 0.2232 0.1863 0.1507 ...
+ $ pneumonia  : num  0.157 0.208 0.193 0.29 0.246 ...
+ $ coronavirus: num  0.00736 0.0089 0.00845 0.01145 0.01381 ...
+ - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt; </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Filter by year 2020</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2VhcmNoXzIwMjAgPSBzZWFyY2hfZHRbeWVhcihhcy5EYXRlKGRhdGUpKSA9PSAyMDIwXVxuaGVhZChzZWFyY2hfMjAyMClcbmBgYCJ9 -->
+<pre class="r"><code>search_2020 = search_dt[year(as.Date(date)) == 2020]
+head(search_2020)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCZ3R5aVREbWl1QmlZR0JnWm1BQlltWldJSk9CMVRIWTJkT1RnWUdGQ2NoaEJFcHdndWdLb0NKaGtDeVE1Z1hTYkF3TTdtRkFIQTdFRVVBY0NjUlJRQnlOcHBFMU9TZXh1QmpJRUFCaUpwaWdwMHRpU1NxVXd3Sm1NekQ4QTJJK2tNbjJoeG84MDZyalpleFAvRWhjeHV1YWJIOVN3RGRVTnVPNC9XTi9uN3pjMlUvdFQyNVJpWSs2bVdWL3RsdHZ6dWxhUjdpK2UvOXpqVGtkVDlpL0x0aHhmdit4RVB1WGV4Ly8zbHV0WVAvNjhvM0lFeWVON0YrOTNSMTU5K0FMKzAvUHI2YWRkL3dFMTNkbnAvS2lPZVd6N0srSFo4eFoySDNOL3U2bHVjZFZEOSszdjc5elcvNWswMHYydDVaOS9xcC9LTlgrcWVyYkMwR1R2ZUg2SnFaZW5wbS9RdDkrMHRhNGozL3Y3Yk9mcS9oZnorUEZjdnVwOTFORGorb1YyMC9lM1h4ZTUyZXMvUUkxcHBNY01ucG9JY05abEYrdWw1ZVltd29LSFZDUU1qVUFpZi8vLy8rQ0tHVDZEdzAxbUFhdWxNU1NSTDIwSXFBVzlFQ0dHU01BamlGb3VLWWdoWEZ5Zms0S2xNMmNsbE1LYzBKQlhtcHBibjVlWmlKVWdEczV2eWcvTDdFc3M2aTBHQklsS1BhdzV4ZVVaT2JuQWFXWW9Ha0J4WUdNUldnQy9LVjVJSmVsNkNabmxPWmw2eHFDUEFHV2hnQmVLSnNOaWMwS3NaTGxQNXB2MkZMejBqUHpZUDVoelVsTVNzMkJjdmlBQVFrT0FMMkNvc3k4RWxob0FVV0w5VXJ5U3hKaDZyaUFnUUFUZ1NTM2Z3QVNWVTBUQWdNQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["date"],"name":[1],"type":["S3: IDate"],"align":["right"]},{"label":["cold"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["flu"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["pneumonia"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["coronavirus"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"2020-01-01","2":"0.14454","3":"0.48434","4":"0.44880","5":"0.01699"},{"1":"2020-01-02","2":"0.19508","3":"0.85751","4":"0.36471","5":"0.01827"},{"1":"2020-01-03","2":"0.19581","3":"0.80443","4":"0.46598","5":"0.02845"},{"1":"2020-01-04","2":"0.60343","3":"0.86961","4":"0.49571","5":"0.02136"},{"1":"2020-01-05","2":"0.20081","3":"0.84152","4":"0.41644","5":"0.01927"},{"1":"2020-01-06","2":"0.23081","3":"1.18160","4":"0.66088","5":"0.03154"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Melt the data table to get keyword column and search volume</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG9uZ19zZWFyY2ggPSBtZWx0KGRhdGEgPSBzZWFyY2hfMjAyMCxcbiAgaWQudmFycyA9IFwiZGF0ZVwiLFxuICBtZWFzdXJlLnZhcnMgPSBjKFwiY29sZFwiLCBcImZsdVwiLCBcInBuZXVtb25pYVwiLCBcImNvcm9uYXZpcnVzXCIpLFxuICB2YXJpYWJsZS5uYW1lID0gXCJ3b3JkXCIsXG4gIHZhbHVlLm5hbWUgPSBcInZhbHVlXCJcbilcbmhlYWQobG9uZ19zZWFyY2gpXG5gYGAifQ== -->
+<pre class="r"><code>long_search = melt(data = search_2020,
+  id.vars = &quot;date&quot;,
+  measure.vars = c(&quot;cold&quot;, &quot;flu&quot;, &quot;pneumonia&quot;, &quot;coronavirus&quot;),
+  variable.name = &quot;word&quot;,
+  value.name = &quot;value&quot;
+)
+head(long_search)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEudGFibGUiLCJkYXRhLmZyYW1lIl0sIm5yb3ciOjYsIm5jb2wiOjN9LCJyZGYiOiJINHNJQUFBQUFBQUFCblZSelVyRFFCRGU1cWZTU0d2QnE5NjhOaUErUUNoV0pLQUlpbHJyb2F6NXNkSHRidGtrclNCQzd6NkNubjBDbjhDTEZ2RUJQSXZ2SUI0YUo4bXUycUNITHpzem1mbG01cHZkVm52TmFCc0lJUlZwQUZVSEUrbk52WFhiUmtoVHdDbkJqMHI2WGtEU1lwYUoxQ3E4WllRMkR3Q0hnRGJnQ05BQkhCY0tkWWZnTUFTakRsQmswRzdoeUJPT2x0a0lUWCtZb2ZwUHpEQ1hpVGYwaUtUV0pKdkRpQ3RzMVNleE1Dc0Q2c1Y5UmdNc0F2TU80NHppWWNEak1DZFdFa0gxM2NESFRzUjRQaHFxcFJIcllXejdsOTBsNitrRDMxVTNIR3RTMzk1ZjdqMWFienRidEgvemJrM3VWN3FkMXpQcjVkcThmYjVxRmthdWNEWXlLZTU3NmRUcHJzb1lQa21TZlA0emd1SGlDSnMraDVLaXJwS21MczZYTGUvK2tuWEV1QlJDSDJJU0M0MW5XT2JZSUFvWUJSNGxQYTVlYUYvaWhjQkNUTk8rYnNQcHhmUzhzWnFPS002RHhFb2xjVUpwcTNsTFhhNm1TM1U5ZWhwUU9hMU84SWxIaEZNRG1iTDF6QUVQYUNTMWdHaG9SaXpDTXMrQVc4dElmcVRwRncwMUtUZlRBZ0FBIn0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["date"],"name":[1],"type":["S3: IDate"],"align":["right"]},{"label":["word"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["value"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"2020-01-01","2":"cold","3":"0.14454"},{"1":"2020-01-02","2":"cold","3":"0.19508"},{"1":"2020-01-03","2":"cold","3":"0.19581"},{"1":"2020-01-04","2":"cold","3":"0.60343"},{"1":"2020-01-05","2":"cold","3":"0.20081"},{"1":"2020-01-06","2":"cold","3":"0.23081"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2dwbG90KGxvbmdfc2VhcmNoLCBhZXMoeCA9IGRhdGUsIHkgPSB2YWx1ZSwgY29sb3IgPSB3b3JkKSkgKyBnZW9tX3BvaW50KCkgKyBsYWJzKHggPSBcInRpbWVcIiwgeSA9IFwic2VhcmNoIHZvbHVtZVwiLCBjb2xvciA9IFwiS2V5d29yZFwiKVxuYGBgIn0= -->
+<pre class="r"><code>ggplot(long_search, aes(x = date, y = value, color = word)) + geom_point() + labs(x = &quot;time&quot;, y = &quot;search volume&quot;, color = &quot;Keyword&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-plot-begin eyJoZWlnaHQiOjQzMi42MzI5LCJ3aWR0aCI6NzAwLCJzaXplX2JlaGF2aW9yIjowLCJjb25kaXRpb25zIjpbXX0= -->
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGwCAMAAAB8TkaXAAABFFBMVEUAAAAAADoAAGYAOmYAOpAAZmYAZpAAZrYAv8QzMzM6AAA6ADo6AGY6Ojo6OmY6OpA6ZmY6kJA6kNtNTU1NTW5NTY5Nbo5NbqtNjshmAABmADpmAGZmOgBmZjpmkJBmtttmtv9uTU1uTW5uTY5ubo5ubqtuq6tuq+R8rgCOTU2OTW6OTY6Obk2ObquOjm6Ojo6OyP+QOgCQOjqQZgCQkDqQkGaQtpCQ2/+rbk2rbm6rbo6rjk2rq26ryKur5Mir5P+2ZgC225C22/+2/9u2///HfP/Ijk3I///bkDrb25Db/7bb/9vb///kq27k///r6+vy8vL4dm3/tmb/yI7/25D/27b/5Kv//7b//8j//9v//+T////JF7iVAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAbD0lEQVR4nO2dC3sTSXaGBUuCMZOQWBDwMsl6ZkIwsElsZmdhJsnayVpYmWA7vsS3/v//I12tlrpbKqmrT5+qOqf0vc8MliVZnw/1qjhd6ssgA0Apg9i/AABUIC9QC+QFaoG8QC2QF6gF8gK10OQ9s7Psfs/EiV33YplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECpBXV6qcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECpBXV6qcYplFpAB5daXKKZZZRAor5b3+4TjLbt8NX57OvkxwLzEEYsYz3Vh98l4OXxxn95/3spNX0y8l7iW6MRqNqD/aJ7YXkDc6K+T98vw/8pn39sOxmYHLL+VD7iU6MRr1slfMeKYbq07eSdtw/eY0u31/UH7J73ySw/xLFPIyvyZIn1Z5L18W1pZfygfc359OYOaVHpvKzGtwL9EN9LzCY5XKG6Ln7YmY8Uw3Vqm895/fTlYb3npcbeiHmPFMN1apvFjnFZUqp1j/braCT9h0pcoplllECpBXV6qcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECpBXV6qcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECpBXV6qcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECpBXV6qcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECpBXV6qcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECpBXV6qcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECjR5ARAAZl5dqXKKZRaRAuTVlSqnWGYRKUiRt8/Vh8WMZ7qxkHcFva77LmY8042FvCuAvLJjIe8KWOXt04LQUwMBeSuEyMvZ8/Z6I5BTQwF5K6TI2wfIGyOVWUQKkJcpNRSQtyJBedHzBkllFpFCivKmnCqnWGYRKUBeXalyimUWkQLk1ZUqp1hmESmkKW+IrldMsZFSmUWkkKS8QdYbpBQbK5VZRAqQly01DJC3AvKypYYB8lYkKS963gCpzCJSSFPedFPlFMssIgXIqytVTrHMIlKAvLpS5RTLLCIFyKsrVU6xzCJSgLy6UuUUyywihZTl9bvmIKzY4KnMIlJIVt7RyPNqr6RiY6Qyi0ghVXlHkNdzKrOIFCAvZ2oAIG9F4vIGTg0A5K1IVV7/nxBLKjZGKrOIFJKVN9FUOcUyi0gB8upKlVMss4gUIK+uVDnFMotIAfLqSpVTLLOIFCCvrlQ5xTKLSAHy6kqVUyyziBQgr65UOcUyi0gB8upKlVMss4gUIK+uVDnFMotIAfLqSpVTLLOIFCCvrlQ5xTKLSKFV3pOhYa/4+uK4vNO9xBCIGc90Y5XKa7h8eZp92avd4V5iCMSMZ7qxeuW9fX+Q3f98ULvHvcQQiBnPdGP1ynvyKhf4XdE85DzJ8fxLAeCCg7xm4s2uv6/Pvu7vzxCImYzSjVU785qOd8Ks73UvMQRixjPdWLXyfnk7uwV5Y6fKKdaTkF1ol3fSLJjp9/4XLJXFTpVTrFct3WiXt2h5i/Xe57MFB/cSQyBmPNON1SqvDfcSCXQ+dFLMeKYbC3nd6H7IeiM2zBUE51PDAXkrUpM30LVbzyAvs4gUIC8VyBsdefL263mb8voUGfJGR6C8nVna83o955OEYmOmMotIITl563g92560YkOnMotIAfKyp/oF8lYkLa/XvkFcsYFTmUWkkLa8Zx632SQWGzKVWUQKycubWKqcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECpBXV6qcYplFpAB5daXKKZZZRAqQV1eqnGKZRaQAeXWlyimWWUQKkFdXqpximUWkAHl1pcoplllECusgr599c4QWGyyVWUQKayCvp70iZRYbLpVZRAqQ11OqLyBvBeT1lOoLyFuxBvKi5/WSajfjbn/LfLkYPO7i08XDI4qG6yBvSqlyirWbMZH34sGnTj5B3rVIlVOs3YxC3s4uQt61SJVTrN0MI2+p4t3+YJDfOjQNxPgvC6kHO5n53jyS33v1zR/yJ9xsDx78BHnXIVVOsUvlLRQ1t3I/x4++GpXv9nfyW9nhX22Zm+YR8//VZv6Mm+2t/H/Iuw6pcopdJu/g0Y9Fx1vMvzfbO/l/+Rx7lP939/GnR1/zr8Uj+R9Xmzvl08aQdx1S5RS7TN5HX83/uZCDgq1s/Nj8l8+4V89+fX1k5mLz8NXTT/l/xdxsGggGefPAYn6HvFJT5RS7TN68t73a3CqtNFx98+f9ote9eHy3/zvTE3uR9/DRr9tFRxJFXvJyrJjxTDe241LZOG97Z8tld/v/YNy8ePTjTjb+i99+mjxi2oann8q2gWG1oWxQHF7JvUR36B+EiRnPdGO7fkhx+PCoaB4KT8fFJxY32/nti0F+52yDzch7s/2YZYMN8spPlVPsSnlvtk3rOxgUs2+xYWb+Xf9arC1ks6UyI2/GtVQ2Nm3D5PXDU8gbJRn4hdjRttPcYLuYbB+24v7+7AB6XrmxvXbMGfuaDbFUpitVTrGurlxtOixf0VgPeYtJnXnnMrHFBkplFpFCQ96rzWJdOc4GG53W2NGMkKl+gLwVdXldVngnuJcYAsgbI9WHjR2ZWypz/Cn3EkMAeWOk+rCxI82ZN1F50fN6SPVhY0caPa/zp3TuJYZAzHimG+ss7//a6aupncQ22IJdNltCsXFT7WZEk7f8aM8B9xJDUMWGu/KwgGIjp9rNiCav/g02yBsu1W5GxJlXlLzOHkLeGKl2MyL2vK57ULiXSMddRPS8MVLtZkRsGwaCNthI8gYE8tqIN/M6414iHcgrKBbyulATltDzhgTy2uggb9mkum9pLSCsbSBtcYkZz3RjCfKen5+HlHfCzW/bzzPlXmJHIK/M2O7ynp/X7Z3JtW2ODMr/zCdII29+6zffMso7OTI5OXnZ1yEgb3d5zSyb63VYHP5u5DW3BqzyxlxtoDjmEsu/Agx5u8s76RRuXh+Zf9/zb8wt1rahOMozmrwUIG+M1BZ5rT3v1bOvpcJ3Hz9NzgGV+8a5weZwblX3EkMAeWOktslrW23wP/M64F5iCNDzxki1m7FaXiNq7qzHntcB9xJDIGY8043lWuedX22422dZbZgu8or5eNgdMeOZbiw+YfOFmPFMNxby+kLMeKYbq0HecczTPZERM57pxiqQdzw5E3u7ve4lhkDMeKYbK1/e8jCgqJ+wURAznunGQl5fiBnPdGPly4u2QX6qnGLtZmCDrSNixjPdWA3yuuJeIom2j3LnHhcznunGQl5X2naimX9czHimGytfXverUbiXSAHyiouVL2/R8jrtJeFeIgXIKy5Wgbw5hxL250XPKy1Wh7xZcQG4tp9yLzEEYsYz3Vgd8h4u7BF5MhwOXxxnt++GL0+n97mX2J/2vcjFjGe6sWw7ow/+hvGibM1rD9t6hi975s/7z3vZyasI8jocvyNmPNONJci7u7u7IO/0sDUP8lpPcXr/84H5cvvhOLv+4RjyRk6VU2yLvLu7dXungg0e/HHiL4vDreu8ebswHO5l129Os9v3xuMnOf1zncFVXVWxUt5y5g0n7/X3B2b2vXw5ldfg/v7sD3peAbE8M29weQu+7FUzr8G9xBCIGc90Y1l73uDyRut5HRAznunGMq02hJbX9Av3vxzff34bZ7XBATHjmW4sq7zmVI5j16umOctrvZTVyXD4/CCLt87bjpjxTDeWVV6zG8LfvmaWN9lrDyeUKqdYuxmr5WUmrUtZpZ8qp1i7GdHkFXYpK2fcYzlPWCa+WM+pdjOiyZv8tYdZTxUpvVjfqXYz4si7Ducqg7yMqXYz4s28zriXGALIGyPVbgbkPevWnaLnjZFqNyOevOay707rZe4lEuk0R4oZz3RjFch7aLx1sde9RCKQV1asfHkFne4J8sqKhbxd8NPzcgJ5bcRrG3CuMvGpcoq1mxFxteEC5yoTniqnWLsZEeV1xb3EEIgZz3Rj5cub/r4N+lPlFGs3w4O8y/dbx15lulLlFGs3o/J1Y2Mj7AZb+1WHJ7iXGAIx45lubHd5Nzbq9paP3rz+gzkzyNWzH4uT4lUXE8z/v/v4U769dVFsc5UPTJ5WPL5pO4ue5drD6e6Yk0CqnGJJ8m4/+nrx8Ohqs7h+q7l46/jxTN79/Obm5Nvy+q6b08u8mgOHLN0DNth0pcoplibvTnm996xU8ub10Wzm/WQeM5fUrq6sXTvHzs3igUOQV1eqnGJb5LX2vEbX7HBnKq/5l/7Bp0V5i6sSf2zIu3gOvXl5rQdgxpXX5ZM2MeOZbizTaoORtzbzTuZSh5nXzNgtbcPd/tbd/o7LmoN7ib0YjZz2cRAznunGcsm7/bjsYmutbXkkfE3eac87k7e49XThHJDzS2WTH5Mh7wjySollm3n/vlhtKOU1J977lJVHwtflbSxDlAfL/+bbhUl1Xt5860/EjjkGyCsmlrFtYGR+f97cXIfVXvcS++Do7iyW8ziJdiCvjXjymiMpDgVck2LKoo1WP7PZYyHthbw2VsvLjK6lMrufkDdGqt0MyLsUBnnZBIe8NiLKm2/U7bjs4OBeYjdZHK5htVxepyi+6Rny2ogn7+GjX7d3eA/A7CTLyicXD63qeftHdALy2ogm78128QkF61IZm7wrHoO8MVLtZkDejo91Gk/0vEypdjPitQ1j0zYwH4DJ1fNyycsG5LURcYNN8gGYy8UWM57pxmqQ1xX3EkMgZjzTjYW8vhAznunGKpC32GJz2J03tLwtfbOY8Uw3VoG8h4/NjpVj18uqhAJXcNUDm7wuF2qbWyozn1CI2SVySttym5jJKN1Ywsybj1nImfdmsk4GeZ2AvDbq7tbsrRQzOy2W+5r/9bcPjxoHuU+OcL969jW7+2iuDp8/4T/L/dYv2o5hu9vfushf+lDA+XmbNNxdFFnMeKYbyySvOSfTxaOv0yPbc10bB7lPjnD/80dzZof/zuXd3Mlqh7sttrPzB2A+zg55d8zhxjINixnPdGOZ5J00srXjK5uHWmaTB8db2Xirdo3i8ij5RdQtlUFeIakt8lp7XtMRTBSujiGu35wc4X717H+Ku2rymnl18SCJ6PI6fnw8exrkFZLaJq9ttaFl5i2PcM8b3mdf5+TNWTwwOLa8jjvu1J6GnldGKkVe0/PmKlZHti8c5F4c4T4ebE2/LY+LN+KmIC9LLAOQt7u8zdWGb47mzrU3PcLdCDw9VU55hfj2M+ZA3g5AXoK8vMSWt3PPyxTbH8hrY73kZUDMeKYbC3l9IWY8042FvL7oGMt0IJCOYv2l2s2AvB3pFst1CKaKYj2mMotIAfKGSWUD8lZA3jCpbEDeivWTFz0vTyqziBRUybtEOzHjmW4s5O3Lsn/wxYxnurGQty+QN1os5O0L5I0WC3l7g55XULHMIlJQJa+o2HUvlllECpBXV6qcYplFpCBA3t7rrt1jp5F9oiFvdOLL2/8Tr86x08he0ZA3OpA3WCoPkLcC8gZL5QHyVsSXN3LPSw6HvNERIG9vesT2sFdfsbypzCJSgLyQl5bKLCIFyAt5aanMIlJYc3l7NNwKi2VNZRaRwrrLqy1VTrHMIlJYV3n7H06hqFgvqcwiUlhTeUej3svLeor1k8osIoX1lrePvXqK9ZPKLCIFyBswlQPIW7Gm8jL0DYqK9ZLKLCKFdnmvvxsO97LsZDgcvjgu73MvMQTEWPS8vVL9eulEq7y37w+y6+8Psi97tTvdSwyBmPFMN1apvJev8j++7N3/fFC7073EEIgZz3RjlcpryGff23fDonvIsic5fn8nAJxwkff+89uic6hmX/f3ZwjETEbpxqqdeW/fvS1vzfpe9xJD0DOWuOGms1i+VF9GdsBltWG2qZakvNQlM5XFMqb6MrIDrfKW7l6+PM3uf0lqqawE8tJSvWrpRqu8Zn3XbKrlX5/PFhzcSwwB5I2R6tdLJ9b1E7Ya6HlJqcwiUoC8ulLlFMssIgXIqytVTrHMIlKAvLpS5RTLLCIFyKsrVU6xzCJSgLy6UuUUyywiBcirK1VOscwiUogrr+YrokHe6ESVl+l6fr3Hk/RbQN7oQF7qrwF5owN5IS8tlVlECuh5IS8tlVlEClhtOJseShw6lQbkrYC8BQR79RbLk8osIgXIWwB5O6cyi0gB8hYsyNvust5ieVKZRaSgVN6GWxyxi+622Qt5o6NT3qZbHmIhb2sqs4gUIK9DgBXIGx3IuzSh5RmQNzo65W1ePJgz1n3RAfJGR6m8JZMZmCnWvFSHJTPIGx3I23gtyOucyiwiBcjbeC3I65zKLCIFvfIWljH2vBNv0fO6pjKLSEGtvLU5krHn7QDkjQ7kpQJ5o6Nb3lEVy7FrcKfXgLzRUStvzd7sjLRbmP0VnQ2GvNHRK++ZH3mdXwjyRgfyzr0g5HVMZRaRgmJ5Z//As/a8zvpC3uholtdP7NTeNoOTKLZHKrOIFCDvIm7tQyLFklOZRaQAeReBvC6pzCJSgLwWnPYvS6VYaiqziBQg7zLQ865OZRaRAuTVlSqnWGYRKdDkBUAAnmfejY0N3inALZaTZe0DZt7o+JV3w8B0Or3leBvPlasOkDc6AeTl+OR2JRnX6SbnGI1WLZplzWfyx9uBvBVpyOsnYjRapW8290T2eDuQtyJAz+t5aJ0WZamvPO9vLSaUvHMvDXkrQiyV+Xa3w65ghNdekLh8MJC8868NeSvUr/N6dHcxY4m8Pt+ekHc5qcgbJmWZvL6Ta99D3gr18tLOyU/Osfa8vnPr30LeCu/y+v+YIti2/iRmGhbEosXKIG+Fb3knH1P4Jdw61Vltog9hkeV9CXkrUpA3wkHLOZA3OpC3Iz6X5uxhzbu87LzcynrKG2LXnAgHLQe0d+4eL4eNtD5rTeUNQOhY67JvKCBvBeQlEc9eyFsBeWkkIy963uUlhiDiZyNe5Z2+diMDqw0VkJee2nDXalovpq/efIdA3grI2zO1FMtuWi8aLxl6l4o5IK8vYo7nnGGcncT8S9djQwN5fRFd3ur8fJVo1Yw8/YGOUlfCNuxdWay3Dhzy+oIt9vz8vGvqaIm99XvPqme6v3zj6TV7VxXrb/sR8vqCK/b8vIu9Vc9r7RwWJ+KpzW4v3xSxg7xe7IW8jnT+QDmqvDXNmp6upvXl557VQV4f9kJeK3Oqbmx035UnsryLs6mTvm2OzT1j+jNtPS/kbcO9xDbmVN2IKS+l57Vjn4FtUnf47SbPz6rvLKGQtx33Elez4GpcedlTGxIvn5HP6i3HqhebyNt4H8w97MddyLvIxkZd1o3mt73+ZgPQIXVm2UqF5yS3v4ptVW4xhH0ChrwLbNR9JZpLiOWhS6r13/il8i6Tb5nrzeP/7Wr3BPIusGHjrPN6g3x5rayef63eufzI0pfqIzPkXaSwdEHervOvUnkL6PJaT0e1+hUtT7UGzN1jL5ZZRAqxVxsKFifeTh2EZnkL6jKtcncmV/WwRXc3e+s/1PYI5F1FU9WuW27zsd3Wa6l4esssF3f2+MLT7bo72+vgN+RdQd3U8/N+8p7XIP9CnVPZWO3uQmyL7JB3Ace/2A5MRS2lW9iGW0UjdvLDDX39mKxoR46pgmdWmV02A9dM3t2Cjn/LlXPzaxCr7CtirSsXNYk72lu+ZVb8kCJ5LZRWjuZ63uqx5l1rIe/ujHz0dxvflT6f1XuEht7nc+wutXEhdpm7NoMnP157FZug5Yzf+pYJT8DYUdWPpC+vxZupufnfQ3Vn8YauHl7KKiFLpn+zDk9dYvKc1s1pf9WMnb68q1OZRaTgLO/tu+HL0+k31gKtrszctdLfXuAf9fLef97LTl5Nv7PLaxd0d2O5vKPV8hIlhvXMaJf39sNxdv3DcfmdVd6l02tved385Z26+/xsamiX9/rNaXb7/iC/9STH+pRlgpoWculj58t9LV7U3Ua2iXv2apSfSxIe1fhxlffy5VReQ6eZd7LRM39H7SGXhawWL5ebSzG5j/UJspvOzGuwC2Z3d6WTLBA3wHfnlqELX5c/t3hw+ZvirHpw1dM4qf1mvnN0y+vQ82L1KN1Y3fLef37bttqA8Uw3Vre8Duu8GM90Y5XL28C9xBCIGc90YyGvL8SMZ7qxkNcXYsYz3VjI6wsx45luLOT1hZjxTDcW8vpCzHimGwt5fSFmPNONhby+EDOe6cZCXl+IGc90YyGvL8SMZ7qxkNcXYsYz3diU5F2CfSf1REGx0YG8VFBsdCAvFRQbHchLBcVGh1VeAEICeYFaIC9QC+QFaoG8QC088lYHxa8B1ekr1oJqbMWNMuTtzOW/vo39K4RkLeS9/m443Muu3/yb+ZIw9z//6Z9Ps9sP/z58fpBd/+PvXwgbUW7ysS2Gd/JFFGzymn9MTYHfvS3Oa5Yu129Ov+xlt+9enl6+yMtN+o1qWAd5zZfbD9M6WV5VJif5u/NVLu9ePgcfpF1qwXrI+2U4fJG+vPefh6bOYqvty17SpU5YB3nNVFTVyfKqIjGny8ytNfJi5o1Mf3nNMOZdblHg9wfJy3timtzLV7fvXk2rTphybM2XkxcpyptdDs12d3YyHP7d7/dSl/f+F1Pb7fs/vf+XYrUh4VIN1dj+04ck5V1L1uyTCplAXhqQVwCQF6gF8gK1QF6gFsgL1AJ5nfm//8qunn6K/VuACsjrCsQVB+R1BfKKA/I6crU5GGzlAl89/WNxK/9jJ8vu9geDh0exf7d1BfK6YmZeI+/mo6/ZeGD+eHh0t/84y8b5bRADyOvKTN4dMw3vFHdcmFn3Znsn9u+2pkBeV6bymtZ3+sd4ULAV+3dbUyCvK1Z50THEBPK6YpP34gFWICICeV0xre28vHf7+dQLg2MBeZ05HDyel7dYKoO7sYC8QC2QF6gF8gK1QF6gFsgL1AJ5gVogL1AL5AVqgbxALZAXqOX/AeZitDtjh7AWAAAAAElFTkSuQmCC" /></p>
+<!-- rnb-plot-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="seoul-floating" class="section level3">
+<h3>SEOUL FLOATING</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="time" class="section level3">
+<h3>TIME</h3>
+<p>1.date: YYYY-MM-DD</p>
+<p>2.time: Time (0 = AM 12:00 / 16 = PM 04:00)</p>
+<ul>
+<li>The time for KCDC to open the information has been changed from PM 04:00 to AM 12:00 since March 2nd.</li>
+</ul>
+<p>3.test: the accumulated number of tests</p>
+<ul>
+<li>A test is a diagnosis of an infection.</li>
+</ul>
+<p>4.negative: the accumulated number of negative results</p>
+<p>5.confirmed: the accumulated number of positive results</p>
+<p>6.released: the accumulated number of releases</p>
+<p>7.deceased: the accumulated number of deceases</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyh0aW1lX2R0KVxuYGBgIn0= -->
+<pre class="r"><code>View(time_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="time-age" class="section level3">
+<h3>TIME AGE</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyh0YWdlX2R0KVxuYGBgIn0= -->
+<pre class="r"><code>View(tage_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="time-gender" class="section level3">
+<h3>TIME GENDER</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyh0Z2VuZGVyX2R0KVxuYGBgIn0= -->
+<pre class="r"><code>View(tgender_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="time-province" class="section level3">
+<h3>TIME PROVINCE</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyh0cHJvdmluY2VfZHQpXG5gYGAifQ== -->
+<pre class="r"><code>View(tprovince_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="weather" class="section level3">
+<h3>WEATHER</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyh3ZWF0aGVyX2R0KVxuYGBgIn0= -->
+<pre class="r"><code>View(weather_dt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiANCg0KVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkN0cmwrU2hpZnQrRW50ZXIqLiANCg0KYGBge3J9DQpwbG90KGNhcnMpDQpgYGANCg0KQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkN0cmwrQWx0K0kqLg0KDQpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkN0cmwrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4NCg0KVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkoZGF0YS50YWJsZSkNCmxpYnJhcnkobWFncml0dHIpDQpsaWJyYXJ5KGdncGxvdDIpDQpgYGANCg0KQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkN0cmwrQWx0K0kqLg0KDQpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkN0cmwrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4NCg0KVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLg0KDQpMb2FkIGFsbCB0aGUgdGFibGVzDQpgYGB7cn0NCnRhYmxlcyA9IGxpc3QuZmlsZXMoImRhdGEvIiwgZnVsbC5uYW1lcyA9IFQpDQp0YWJsZXMNCmBgYA0KUmVhZCBpbmRpdmlkdWFsIGNzdiBmaWxlcyAgIA0KYGBge3J9DQpjYXNlX2R0ID0gZnJlYWQodGFibGVzWzFdKQ0KcGluZm9fZHQgPSBmcmVhZCh0YWJsZXNbMl0pDQpwb2xpY3lfZHQgPSBmcmVhZCh0YWJsZXNbM10pDQpyZWdpb25fZHQgPSBmcmVhZCh0YWJsZXNbNF0pDQpzZWFyY2hfZHQgPSBmcmVhZCh0YWJsZXNbNV0pDQpzZW91bF9kdCA9IGZyZWFkKHRhYmxlc1s2XSkNCnRpbWVfZHQgPSBmcmVhZCh0YWJsZXNbN10pDQp0YWdlX2R0ID0gZnJlYWQodGFibGVzWzhdKQ0KdGdlbmRlcl9kdCA9IGZyZWFkKHRhYmxlc1s5XSkNCnRwcm92aW5jZV9kdCA9IGZyZWFkKHRhYmxlc1sxMF0pDQp3ZWF0aGVyX2R0ID0gZnJlYWQodGFibGVzWzExXSkNCmBgYA0KDQojIyMgQ0FTRQ0KDQoxLmNhc2VfaWQ6IHRoZSBJRCBvZiB0aGUgaW5mZWN0aW9uIGNhc2UNCg0KKiBjYXNlX2lkKDcpID0gcmVnaW9uX2NvZGUoNSkgKyBjYXNlX251bWJlcigyKQ0KKiBZb3UgY2FuIGNoZWNrIHRoZSByZWdpb25fY29kZSBpbiAnUmVnaW9uLmNzdg0KDQoyLnByb3ZpbmNlOiBTcGVjaWFsIENpdHkgLyBNZXRyb3BvbGl0YW4gQ2l0eSAvIFByb3ZpbmNlKC1kbykNCg0KMy5jaXR5OiBDaXR5KC1zaSkgLyBDb3VudHJ5ICgtZ3VuKSAvIERpc3RyaWN0ICgtZ3UpDQoNCiogVGhlIHZhbHVlICdmcm9tIG90aGVyIGNpdHknIG1lYW5zIHRoYXQgd2hlcmUgdGhlIGdyb3VwIGluZmVjdGlvbiBzdGFydGVkIGlzIG90aGVyIGNpdHkuDQoNCjQuZ3JvdXA6IFRSVUU6IGdyb3VwIGluZmVjdGlvbiAvIEZBTFNFOiBub3QgZ3JvdXANCg0KKiBJZiB0aGUgdmFsdWUgaXMgJ1RSVUUnIGluIHRoaXMgY29sdW1uLCB0aGUgdmFsdWUgb2YgJ2luZmVjdGlvbl9jYXNlcycgbWVhbnMgdGhlIG5hbWUgb2YgZ3JvdXAuDQoqIFRoZSB2YWx1ZXMgbmFtZWQgJ2NvbnRhY3Qgd2l0aCBwYXRpZW50JywgJ292ZXJzZWFzIGluZmxvdycgYW5kICdldGMnIGFyZSBub3QgZ3JvdXAgaW5mZWN0aW9uLg0KDQo1LmluZmVjdGlvbl9jYXNlOiB0aGUgaW5mZWN0aW9uIGNhc2UgKHRoZSBuYW1lIG9mIGdyb3VwIG9yIG90aGVyIGNhc2VzKQ0KDQoqIFRoZSB2YWx1ZSAnb3ZlcnNlYXMgaW5mbG93JyBtZWFucyB0aGF0IHRoZSBpbmZlY3Rpb24gaXMgZnJvbSBvdGhlciBjb3VudHJ5Lg0KKiBUaGUgdmFsdWUgJ2V0YycgaW5jbHVkZXMgaW5kaXZpZHVhbCBjYXNlcywgY2FzZXMgd2hlcmUgcmVsZXZhbmNlIGNsYXNzaWZpY2F0aW9uIA0KaXMgb25nb2luZyBhZnRlciBpbnZlc3RpZ2F0aW9uLCBhbmQgY2FzZXMgdW5kZXIgaW52ZXN0aWdhdGlvbg0KDQo2LmxhdGl0dWRlOiB0aGUgbGF0aXR1ZGUgb2YgdGhlIGdyb3VwIChXR1M4NCkNCg0KNy5sb25naXR1ZGU6IHRoZSBsb25naXR1ZGUgb2YgdGhlIGdyb3VwIChXR1M4NCkNCg0KYGBge3J9DQpoZWFkKGNhc2VfZHQpDQpgYGANCg0KYGBge3J9DQpzdW1tYXJ5KGNhc2VfZHQpDQpgYGANCg0KYGBge3J9DQpzdHIoY2FzZV9kdCkNCmBgYA0KDQpgYGB7cn0NCmNhc2VfZHRbLCB1bmlxdWUoaW5mZWN0aW9uX2Nhc2UpXQ0KY2FzZV9kdFssIHVuaXF1ZShwcm92aW5jZSldDQpgYGANCmBgYHtyfQ0KZ3JvdXBfdnNfc2luZ2xlID0gY2FzZV9kdFssIC4oY2FzZXMgPSBzdW0oY29uZmlybWVkKSksIGJ5ID0gZ3JvdXBdDQpncm91cF92c19zaW5nbGUNCmBgYA0KYGBge3J9DQpjaXR5X3dpc2VfY2FzZXMgPSBjYXNlX2R0WywgLihjYXNlcyA9IHN1bShjb25maXJtZWQpKSwgYnkgPSBjaXR5XVtvcmRlcihjYXNlcywgZGVjcmVhc2luZyA9IFQpXQ0KY2l0eV93aXNlX2Nhc2VzDQpgYGANCg0KDQojIyMgUEFUSUVOVA0KDQoxLnBhdGllbnRfaWQ6IHRoZSBJRCBvZiB0aGUgcGF0aWVudA0KDQoqIHBhdGllbnRfaWQoMTApID0gcmVnaW9uX2NvZGUoNSkgKyBwYXRpZW50X251bWJlcig1KQ0KKiBZb3UgY2FuIGNoZWNrIHRoZSByZWdpb25fY29kZSBpbiAnUmVnaW9uLmNzdicNCiogVGhlcmUgYXJlIHR3byB0eXBlcyBvZiB0aGUgcGF0aWVudF9udW1iZXINCiAgMSkgbG9jYWxfbnVtOiBUaGUgbnVtYmVyIGdpdmVuIGJ5IHRoZSBsb2NhbCBnb3Zlcm5tZW50Lg0KICAyKSBnbG9iYWxfbnVtOiBUaGUgbnVtYmVyIGdpdmVuIGJ5IHRoZSBLQ0RDDQoNCjIuc2V4OiB0aGUgc2V4IG9mIHRoZSBwYXRpZW50DQoNCjMuYWdlOiB0aGUgYWdlIG9mIHRoZSBwYXRpZW50DQoNCiogMHM6IDAgfiA5DQoqIDEwczogMTAgfiAxOQ0KLi4uDQoqIDkwczogOTAgfiA5OQ0KKiAxMDBzOiAxMDAgfiAxMDkNCg0KNC5jb3VudHJ5OiB0aGUgY291bnRyeSBvZiB0aGUgcGF0aWVudA0KDQo1LnByb3ZpbmNlOiB0aGUgcHJvdmluY2Ugb2YgdGhlIHBhdGllbnQNCg0KNi5jaXR5OiB0aGUgY2l0eSBvZiB0aGUgcGF0aWVudA0KDQo3LmluZmVjdGlvbl9jYXNlOiB0aGUgY2FzZSBvZiBpbmZlY3Rpb24NCg0KOC5pbmZlY3RlZF9ieTogdGhlIElEIG9mIHdobyBpbmZlY3RlZCB0aGUgcGF0aWVudA0KDQoqIFRoaXMgY29sdW1uIHJlZmVycyB0byB0aGUgJ3BhdGllbnRfaWQnIGNvbHVtbi4NCg0KOS5jb250YWN0X251bWJlcjogdGhlIG51bWJlciBvZiBjb250YWN0cyB3aXRoIHBlb3BsZQ0KDQoxMC5zeW1wdG9tX29uc2V0X2RhdGU6IHRoZSBkYXRlIG9mIHN5bXB0b20gb25zZXQNCg0KMTEuY29uZmlybWVkX2RhdGU6IHRoZSBkYXRlIG9mIGJlaW5nIGNvbmZpcm1lZA0KDQoxMi5yZWxlYXNlZF9kYXRlOiB0aGUgZGF0ZSBvZiBiZWluZyByZWxlYXNlZA0KDQoxMy5kZWNlYXNlZF9kYXRlOiB0aGUgZGF0ZSBvZiBiZWluZyBkZWNlYXNlZA0KDQoxNC5zdGF0ZTogaXNvbGF0ZWQgLyByZWxlYXNlZCAvIGRlY2Vhc2VkDQoNCiogaXNvbGF0ZWQ6IGJlaW5nIGlzb2xhdGVkIGluIHRoZSBob3NwaXRhbA0KKiByZWxlYXNlZDogYmVpbmcgcmVsZWFzZWQgZnJvbSB0aGUgaG9zcGl0YWwNCiogZGVjZWFzZWQ6IGJlaW5nIGRlY2Vhc2VkDQoNCmBgYHtyfQ0KVmlldyhwaW5mb19kdCkNCmBgYA0KDQpgYGB7cn0NCmhlYWQocGluZm9fZHQpDQpzdHIocGluZm9fZHQpDQpgYGANCmBgYHtyfQ0KcGluZm9fZHRbLCB1bmlxdWUoYWdlKV0NCmBgYA0KYGBge3J9DQoNCmBgYA0KDQojIyMgUE9MSUNZDQoNCjEucG9saWN5X2lkOiB0aGUgSUQgb2YgdGhlIHBvbGljeQ0KDQoyLmNvdW50cnk6IHRoZSBjb3VudHJ5IHRoYXQgaW1wbGVtZW50ZWQgdGhlIHBvbGljeQ0KDQozLnR5cGU6IHRoZSB0eXBlIG9mIHRoZSBwb2xpY3kNCg0KNC5nb3ZfcG9saWN5OiB0aGUgcG9saWN5IG9mIHRoZSBnb3Zlcm5tZW50DQoNCjUuZGV0YWlsOiB0aGUgZGV0YWlsIG9mIHRoZSBwb2xpY3kNCg0KNi5zdGFydF9kYXRlOiB0aGUgc3RhcnQgZGF0ZSBvZiB0aGUgcG9saWN5DQoNCjcuZW5kX2RhdGU6IHRoZSBlbmQgZGF0ZSBvZiB0aGUgcG9saWN5DQoNCmBgYHtyfQ0KVmlldyhwb2xpY3lfZHQpDQpgYGANCg0KYGBge3J9DQpoZWFkKHBvbGljeV9kdCkNCnN0cihwb2xpY3lfZHQpDQpgYGANCkRpZmZlcmVudCBwb2xpY2llcw0KDQpgYGB7cn0NCnBvbGljeV9kdFssIHVuaXF1ZShnb3ZfcG9saWN5KV0NCmBgYA0KDQoNCmBgYHtyfQ0KZHQxID0gdGltZV9kdFssIGMoImRhdGUiLCAiY29uZmlybWVkIildDQpkdDIgPSBwb2xpY3lfZHRbLCAuKGRhdGUgPSBlbmRfZGF0ZSwgZ292X3BvbGljeSwgdHlwZSwgZGV0YWlsKV0NCmhlYWQoZHQxKQ0KaGVhZChkdDIpDQpwb2xpY3lfY2FzZXMgPSBtZXJnZSgNCiAgZHQxLA0KICBkdDIsDQogIGJ5ID0gImRhdGUiLA0KICBhbGwueCA9IFQNCikNCmhlYWQocG9saWN5X2Nhc2VzKQ0KYGBgDQoNCg0KYGBge3J9DQpgYGANCg0KIyMjIFJFR0lPTg0KDQoxLmNvZGU6IHRoZSBjb2RlIG9mIHRoZSByZWdpb24NCg0KMi5wcm92aW5jZTogU3BlY2lhbCBDaXR5IC8gTWV0cm9wb2xpdGFuIENpdHkgLyBQcm92aW5jZSgtZG8pDQoNCjMuY2l0eTogQ2l0eSgtc2kpIC8gQ291bnRyeSAoLWd1bikgLyBEaXN0cmljdCAoLWd1KQ0KDQo0LmxhdGl0dWRlOiB0aGUgbGF0aXR1ZGUgb2YgdGhlIHZpc2l0IChXR1M4NCkNCg0KNS5sb25naXR1ZGU6IHRoZSBsb25naXR1ZGUgb2YgdGhlIHZpc2l0IChXR1M4NCkNCg0KNi5lbGVtZW50YXJ5X3NjaG9vbF9jb3VudDogdGhlIG51bWJlciBvZiBlbGVtZW50YXJ5IHNjaG9vbHMNCg0KNy5raW5kZXJnYXJ0ZW5fY291bnQ6IHRoZSBudW1iZXIgb2Yga2luZGVyZ2FydGVucw0KDQo4LnVuaXZlcnNpdHlfY291bnQ6IHRoZSBudW1iZXIgb2YgdW5pdmVyc2l0aWVzDQoNCjkuYWNhZGVteV9yYXRpbzogdGhlIHJhdGlvIG9mIGFjYWRlbWllcw0KDQoxMC5lbGRlcmx5X3BvcHVsYXRpb25fcmF0aW86IHRoZSByYXRpbyBvZiB0aGUgZWxkZXJseSBwb3B1bGF0aW9uDQoNCjExLmVsZGVybHlfYWxvbmVfcmF0aW86IHRoZSByYXRpbyBvZiBlbGRlcmx5IGhvdXNlaG9sZHMgbGl2aW5nIGFsb25lDQoNCjEyLm51cnNpbmdfaG9tZV9jb3VudDogdGhlIG51bWJlciBvZiBudXJzaW5nIGhvbWVzDQoNCmBgYHtyfQ0KYGBgDQoNCg0KYGBge3J9DQpgYGANCg0KIyMjIFNFQVJDSCBUUkVORA0KDQoxLmRhdGU6IFlZWVktTU0tREQNCg0KMi5jb2xkOiB0aGUgc2VhcmNoIHZvbHVtZSBvZiAnY29sZCcgaW4gS29yZWFuIGxhbmd1YWdlDQoNCiogVGhlIHVuaXQgbWVhbnMgcmVsYXRpdmUgdmFsdWUgYnkgc2V0dGluZyB0aGUgaGlnaGVzdCBzZWFyY2ggdm9sdW1lIGluIHRoZSBwZXJpb2QgdG8gMTAwLg0KDQozLmZsdTogdGhlIHNlYXJjaCB2b2x1bWUgb2YgJ2ZsdScgaW4gS29yZWFuIGxhbmd1YWdlDQoNCiogU2FtZSBhcyBhYm92ZS4NCg0KNC5wbmV1bW9uaWE6IHRoZSBzZWFyY2ggdm9sdW1lIG9mICdwbmV1bW9uaWEnIGluIEtvcmVhbiBsYW5ndWFnZQ0KDQoqIFNhbWUgYXMgYWJvdmUuDQoNCjUuY29yb25hdmlydXM6IHRoZSBzZWFyY2ggdm9sdW1lIG9mICdjb3JvbmF2aXJ1cycgaW4gS29yZWFuIGxhbmd1YWdlDQoNCiogU2FtZSBhcyBhYm92ZS4NCg0KYGBge3J9DQpWaWV3KHNlYXJjaF9kdCkNCmBgYA0KDQoNCmBgYHtyfQ0KaGVhZChzZWFyY2hfZHQpDQpzdHIoc2VhcmNoX2R0KQ0KYGBgDQpGaWx0ZXIgYnkgeWVhciAyMDIwDQpgYGB7cn0NCnNlYXJjaF8yMDIwID0gc2VhcmNoX2R0W3llYXIoYXMuRGF0ZShkYXRlKSkgPT0gMjAyMF0NCmhlYWQoc2VhcmNoXzIwMjApDQpgYGANCg0KTWVsdCB0aGUgZGF0YSB0YWJsZSB0byBnZXQga2V5d29yZCBjb2x1bW4gYW5kIHNlYXJjaCB2b2x1bWUNCmBgYHtyfQ0KbG9uZ19zZWFyY2ggPSBtZWx0KGRhdGEgPSBzZWFyY2hfMjAyMCwNCiAgaWQudmFycyA9ICJkYXRlIiwNCiAgbWVhc3VyZS52YXJzID0gYygiY29sZCIsICJmbHUiLCAicG5ldW1vbmlhIiwgImNvcm9uYXZpcnVzIiksDQogIHZhcmlhYmxlLm5hbWUgPSAid29yZCIsDQogIHZhbHVlLm5hbWUgPSAidmFsdWUiDQopDQpoZWFkKGxvbmdfc2VhcmNoKQ0KYGBgDQpgYGB7cn0NCmdncGxvdChsb25nX3NlYXJjaCwgYWVzKHggPSBkYXRlLCB5ID0gdmFsdWUsIGNvbG9yID0gd29yZCkpICsgZ2VvbV9wb2ludCgpICsgbGFicyh4ID0gInRpbWUiLCB5ID0gInNlYXJjaCB2b2x1bWUiLCBjb2xvciA9ICJLZXl3b3JkIikNCmBgYA0KDQojIyMgU0VPVUwgRkxPQVRJTkcNCg0KYGBge3J9DQpgYGANCg0KDQpgYGB7cn0NCmBgYA0KDQoNCmBgYHtyfQ0KYGBgDQoNCiMjIyBUSU1FDQoNCjEuZGF0ZTogWVlZWS1NTS1ERA0KDQoyLnRpbWU6IFRpbWUgKDAgPSBBTSAxMjowMCAvIDE2ID0gUE0gMDQ6MDApDQoNCiogVGhlIHRpbWUgZm9yIEtDREMgdG8gb3BlbiB0aGUgaW5mb3JtYXRpb24gaGFzIGJlZW4gY2hhbmdlZCBmcm9tIFBNIDA0OjAwIHRvIEFNIDEyOjAwIHNpbmNlIE1hcmNoIDJuZC4NCg0KMy50ZXN0OiB0aGUgYWNjdW11bGF0ZWQgbnVtYmVyIG9mIHRlc3RzDQoNCiogQSB0ZXN0IGlzIGEgZGlhZ25vc2lzIG9mIGFuIGluZmVjdGlvbi4NCg0KNC5uZWdhdGl2ZTogdGhlIGFjY3VtdWxhdGVkIG51bWJlciBvZiBuZWdhdGl2ZSByZXN1bHRzDQoNCjUuY29uZmlybWVkOiB0aGUgYWNjdW11bGF0ZWQgbnVtYmVyIG9mIHBvc2l0aXZlIHJlc3VsdHMNCg0KNi5yZWxlYXNlZDogdGhlIGFjY3VtdWxhdGVkIG51bWJlciBvZiByZWxlYXNlcw0KDQo3LmRlY2Vhc2VkOiB0aGUgYWNjdW11bGF0ZWQgbnVtYmVyIG9mIGRlY2Vhc2VzDQpgYGB7cn0NClZpZXcodGltZV9kdCkNCmBgYA0KDQpgYGB7cn0NCmBgYA0KDQpgYGB7cn0NCmBgYA0KDQpgYGB7cn0NCmBgYA0KIyMjIFRJTUUgQUdFDQoNCmBgYHtyfQ0KVmlldyh0YWdlX2R0KQ0KYGBgDQoNCiMjIyBUSU1FIEdFTkRFUg0KDQpgYGB7cn0NClZpZXcodGdlbmRlcl9kdCkNCmBgYA0KDQojIyMgVElNRSBQUk9WSU5DRQ0KDQpgYGB7cn0NClZpZXcodHByb3ZpbmNlX2R0KQ0KYGBgDQoNCiMjIyBXRUFUSEVSDQoNCmBgYHtyfQ0KVmlldyh3ZWF0aGVyX2R0KQ0KYGBgDQoNCg0K</div>
 
 
 
