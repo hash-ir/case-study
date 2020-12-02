@@ -195,10 +195,12 @@ policy_cases = merge(
   all.x = T
 )
 head(policy_cases)
+str(policy_cases)
 ```
 
 
 ```{r}
+ggplot(policy_cases[!is.na(gov_policy)], aes(gov_policy, confirmed)) + geom_bar(stat = 'identity', width = .5)
 ```
 
 ### REGION
@@ -280,7 +282,8 @@ long_search = melt(data = search_2020,
 head(long_search)
 ```
 ```{r}
-ggplot(long_search, aes(x = date, y = value, color = word)) + geom_point() + labs(x = "time", y = "search volume", color = "Keyword")
+ggplot(long_search, aes(x = date, y = value, color = word)) + geom_line() + labs(x = "time", y = "search volume", color = "Keyword") + ggtitle("Search trend of the keywords in Korean language during the COVID timeline")
+ggsave("search_trend.png")
 ```
 
 ### SEOUL FLOATING
