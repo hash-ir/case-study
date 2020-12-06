@@ -1,0 +1,26 @@
+"0","
+library(ggplot2)
+"
+"2","Registered S3 method overwritten by 'dplyr':
+  method           from
+  print.rowwise_df     
+"
+"0","library(data.table)"
+"2","package ‘data.table’ was built under R version 3.6.2"
+"2","Registered S3 method overwritten by 'data.table':
+  method           from
+  print.data.table     
+"
+"2","data.table 1.13.2 using 2 threads (see ?getDTthreads).  Latest news: r-datatable.com
+"
+"0","library(magrittr) "
+"0","library(tidyr)"
+"2","
+Attaching package: ‘tidyr’
+
+"
+"2","The following object is masked from ‘package:magrittr’:
+
+    extract
+
+"

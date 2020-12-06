@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1607083013740.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E062819D",
+    "lastKnownWriteTime" : 8030879312480528756,
+    "last_content_update" : 1607083013740,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "8941AED7",
+        "caption" : "weather_dt",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=weather_dt&cache_key=8941AED7",
+        "displayedObservations" : 26271,
+        "environment" : "",
+        "expression" : "weather_dt",
+        "object" : "weather_dt",
+        "preview" : 0,
+        "totalObservations" : 26271,
+        "variables" : 10
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

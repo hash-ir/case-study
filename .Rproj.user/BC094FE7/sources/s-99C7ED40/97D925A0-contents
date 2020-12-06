@@ -1,0 +1,33 @@
+---
+title: "phase1"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(data.table)
+library(magrittr) 
+library(tidyr)
+```
+
+
+```{r}
+  case_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/Case.csv")
+  patientInfo_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/PatientInfo.csv")
+  policy_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/Policy.csv")
+  region_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/Region.csv")
+  searchTrend_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/SearchTrend.csv")
+  seoulFloating_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/SeoulFloating.csv")
+  time_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/Time.csv")
+  timeAge_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/TimeAge.csv")
+  timeGender_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/TimeGender.csv")
+  timeProvince_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/TimeProvince.csv")
+  weather_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/Weather.csv")
+```
+
+```{r}
+#SearchTrends vs Coronavirus Confirmed Cases
+melt(searchTrend_dt, id.vars = "date", value.name = "search_metric", variable.name = "search_keyword") %>% .[date >= as.Date("2019-12-01") ] %>% ggplot(aes(x= date,y= search_metric)) + geom_line(aes(color=search_keyword)) + geom_line(data = time_dt, aes(x=date, y=test)) + scale_y_log10()
+```
+
+
