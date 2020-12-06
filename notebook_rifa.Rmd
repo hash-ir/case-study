@@ -53,14 +53,14 @@ province_cases
 ```
 ```{r}
 # Plotting a bar graph for number of total cases for various provinces 
-ggplot(province_cases, aes(x=province, y=number_of_cases , fill=province)) + geom_bar(stat='identity') + coord_flip() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-labs(x='Province', y='Total number of confirmed cases')
+ggplot(province_cases, aes(x=province, y=number_of_cases , fill=province)) + geom_bar(stat='identity') + coord_flip() + theme(axis.text.x = element_text(angle = 90, vjust = 1.0, hjust=1))+
+labs(x='Province', y='Total number of confirmed cases') + ggtitle("Number of COVID cases in various provinces") 
 ```
 ```{r}
 # Plotting growth in the total number of cases for various provinces
 ggplot(tprovince_dt, aes(x=date, y=confirmed, color=province)) + geom_line() + geom_point() +
-theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-labs(x='Date', y='Number of confirmed cases')
+theme(axis.text.x = element_text(angle = 90, vjust = 1.5, hjust=1)) +
+labs(x='Date', y='Number of confirmed cases') + ggtitle("Growth in number of COVID cases for various provinces") 
 ```
 The number of cases is quite high (in thousands) for some provinces and comparatively smaller (in hundreds or less) for other provinces. 
 
@@ -91,7 +91,7 @@ tprovince_Seoul=tprovince_dt[province=="Seoul"]
 # Plotting total number of cases for Seoul
 ggplot(tprovince_Seoul, aes(x=date, y=confirmed)) + geom_line() +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-labs(x="Date", y="Number of total confirmed cases")
+labs(x="Date", y="Number of total confirmed cases")+ ggtitle("Plot of total number of cases for Seoul province")
 ```
 The same could be done for other provinces.
 
@@ -107,14 +107,14 @@ tprovince_Seoul[, daily_new_deaths:=  deceased-shift(deceased,fill=first(decease
 #Plotting daily new cases for Seoul 
 ggplot(tprovince_Seoul, aes(x=date, y=daily_new_case)) + geom_line() +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-labs(x="Date", y="Number of new confirmed cases")
+labs(x="Date", y="Number of new confirmed cases") + ggtitle("Plot of new cases for Seoul province")
 ```
 
 ```{r}
 #Plotting daily new deaths for Seoul 
 ggplot(tprovince_Seoul, aes(x=date, y=daily_new_deaths)) + geom_line() +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-labs(x="Date", y="Number of new deaths")
+labs(x="Date", y="Number of new deaths") + ggtitle("Plot of daily new deaths for Seoul province")
 ```
 
 ## Analyzing effect of temp on number of covid cases
@@ -151,7 +151,7 @@ Seoul_weather_time[,.(avg_temp,daily_new_case)]
 #Plotting daily new cases against temp
 ggplot(Seoul_weather_time, aes(x=avg_temp, y=daily_new_case)) + geom_point() +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-labs(x="temp", y="Number of new cases")
+labs(x="temp", y="Number of new cases") + ggtitle("Plot of new cases vs temperature for Seoul province")
 ```
 As temperature values repeat, we take average number of cases corresponding to a particular temperature.
 ```{r}
@@ -162,7 +162,7 @@ Seoul_weather_time[,.(avg_temp,avg_no_of_new_cases)][order(-avg_no_of_new_cases)
 #Plotting average number of new cases against temp
 ggplot(Seoul_weather_time, aes(x=avg_temp, y=avg_no_of_new_cases)) + geom_line() +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-labs(x="Temperature", y="Average number of new cases")
+labs(x="Temperature", y="Average number of new cases") + ggtitle("Plot of average number of new cases vs temperature for Seoul province")
 ```
 From the above graph we infer that the average number of cases is generally higher for a temperature above 3.8 and comaparatively lower for lower temperature ranges.
 
@@ -170,7 +170,7 @@ From the above graph we infer that the average number of cases is generally high
 #Plotting daily new cases against precipitation
 ggplot(Seoul_weather_time, aes(x=precipitation, y=daily_new_case)) + geom_point() +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-labs(x="Precipitation", y="Number of new cases")
+labs(x="Precipitation", y="Number of new cases") + ggtitle("Plot of new cases vs precipitation for Seoul province")
 ```
 Here also, we need to look at average number of cases for a particular precipitation value, as precipitation value is same for multiple days.
 ```{r}
@@ -181,7 +181,7 @@ Seoul_weather_time[, .(precipitation, avg_no_of_new_cases_prep)]
 #Plotting average number of new cases against precipitation
 ggplot(Seoul_weather_time, aes(x=precipitation, y=avg_no_of_new_cases_prep)) + geom_line() + geom_point()+
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-labs(x="Precipitation", y="Average number of new cases")
+labs(x="Precipitation", y="Average number of new cases") + ggtitle("Plot of average number of new cases vs precipitation for Seoul province")
 ```
 Precipitation changes seem to have no effect on the number of COVID cases.
 
