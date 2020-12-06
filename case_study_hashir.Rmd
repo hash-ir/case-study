@@ -16,6 +16,7 @@ When you save the notebook, an HTML file containing the code and output will be 
 The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
 
 Load all the tables
+
 ```{r}
 tables = list.files("data/", full.names = T)
 tables
@@ -64,6 +65,7 @@ is ongoing after investigation, and cases under investigation
 7.longitude: the longitude of the group (WGS84)
 
 ```{r}
+View(case_dt)
 head(case_dt)
 ```
 
@@ -146,10 +148,18 @@ head(pinfo_dt)
 str(pinfo_dt)
 ```
 ```{r}
-pinfo_dt[, unique(age)]
+complete_pinfo <- pinfo_dt[!is.na(symptom_onset_date) & !is.na(confirmed_date)]
+diagnosis_dt <- complete_pinfo[, diag_time := confirmed_date - symptom_onset_date]
+head(diagnosis_dt)
 ```
 ```{r}
+diagnosis_dt <- diagnosis_dt[, type := ifelse(age %in% c("0s", "10s"), "child", ifelse(age %in% c("20s", "30s", "40s", "50s"), "adult", "old"))]
+head(diagnosis_dt)
+```
 
+```{r}
+ggplot(diagnosis_dt[age != ""], aes(diag_time, color = type)) + geom_freqpoly() + geom_vline(xintercept = 2) + labs(x = "Diagnosis Time (days)", y = "#Patients", color = "Group") + scale_color_discrete(name = "", labels = c("Children (0-19)", "Adults (20-59)", "Seniors (60+)")) + ggtitle("Time (days) to diagnose a patient with COVID-19 from the onset of symptoms") + theme(legend.position = "top", legend.direction = "horizontal")
+ggsave("visualizations/diagnosis_time.png")
 ```
 
 ### POLICY
@@ -318,6 +328,7 @@ ggsave("search_trend.png")
 6.released: the accumulated number of releases
 
 7.deceased: the accumulated number of deceases
+
 ```{r}
 View(time_dt)
 ```
