@@ -8,6 +8,7 @@ library(ggplot2)
 library(data.table)
 library(magrittr) 
 library(tidyr)
+library(ggrepel)
 ```
 
 
@@ -23,11 +24,64 @@ library(tidyr)
   timeGender_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/TimeGender.csv")
   timeProvince_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/TimeProvince.csv")
   weather_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/Weather.csv")
+  krx100_dt <- fread("~/Desktop/tum ws20/R/case_study_data/data/KRX100.csv")
 ```
 
 ```{r}
-#SearchTrends vs Coronavirus Confirmed Cases
-melt(searchTrend_dt, id.vars = "date", value.name = "search_metric", variable.name = "search_keyword") %>% .[date >= as.Date("2019-12-01") ] %>% ggplot(aes(x= date,y= search_metric)) + geom_line(aes(color=search_keyword)) + geom_line(data = time_dt, aes(x=date, y=test)) + scale_y_log10()
+#data_wrangling_tidying
+searchTrend_dt <- melt(searchTrend_dt, id.vars = "date", value.name = "search_metric", variable.name = "search_keyword")
+
+#krx100_dt
+krx100_dt[,Price := sub(',','',krx100_dt$Price)]
+krx100_dt[,Open := sub(',','',krx100_dt$Open)]
+krx100_dt[,High := sub(',','',krx100_dt$High)]
+krx100_dt[,Low := sub(',','',krx100_dt$Low)]
+krx100_dt[,Vol. := sub('M','',krx100_dt$Vol.)]
+krx100_dt[,Date := as.Date.character(Date,format ='%b %d, %Y' )]
+krx100_dt[,c("Price","Open","High","Low","Vol.") := lapply(.SD, as.double), .SDcols = c("Price","Open","High","Low","Vol.")]
+krx100_dt[,`Change %` := NULL]
 ```
 
+
+
+```{r}
+#SearchTrends vs Coronavirus Number of Tests
+searchTrend_dt[date >= as.Date("2019-12-01") ] %>% ggplot(aes(x= date,y= search_metric)) + geom_line(aes(color=search_keyword)) + geom_line(data = time_dt, aes(x=date, y=test)) + scale_y_log10()
+```
+
+```{r}
+#Policy$type vs. query_frequency
+merge(policy_dt,searchTrend_dt[date >= as.Date("2019-12-01") ], by.x="start_date", by.y="date",all.y = TRUE) %>% ggplot(.,aes(x= start_date,y= search_metric)) + geom_line(aes(color=search_keyword))  + facet_wrap(~type) + scale_y_log10() + geom_point(data = policy_dt,aes(x=start_date, y=5, alpha=0.001))
+
+
+merge(policy_dt,searchTrend_dt[date >= as.Date("2019-12-01") ], by.x="start_date", by.y="date",all.y = TRUE) %>% ggplot(.,aes(x= start_date,y= search_metric)) + geom_line(aes(linetype=search_keyword))+ scale_y_log10() + geom_jitter(data = policy_dt,aes(x=start_date, y=5, color = type,alpha=0.001))
+
+```
+
+```{r}
+#korean_stock_market_performance vs. case numbers
+krx100_dt
+merge(krx100_dt,time_dt, by.x = 'Date', by.y = 'date') %>% ggplot(aes(x=confirmed, y= Price, color = Date, size = Vol.)) + geom_point()
+
+```
+
+```{r}
+#stock market vs. query_trends
+merge(krx100_dt, searchTrend_dt, by.x='Date', by.y= 'date')[search_keyword == "coronavirus"] %>% ggplot(aes(x = Price, y= search_metric, color = Vol.)) + geom_point() + scale_x_log10()
+
+
+merge(krx100_dt, searchTrend_dt, by.x='Date', by.y= 'date')[search_keyword == "coronavirus"] %>% ggplot(aes(x=Date,y=scale(Price))) + geom_line() + geom_line(aes(x=Date, y=scale(search_metric))) 
+```
+
+```{r}
+#stock_market_performance vs. cases in provinces
+
+merge(timeProvince_dt, krx100_dt, by.x='date', by.y='Date')%>% ggplot(aes(x=date,y=Price)) + geom_line() + geom_line(aes(x=date,y=confirmed)) +  facet_wrap(~province)
+```
+
+```{r}
+# policies vs stock_market_reaction
+
+
+```
 
