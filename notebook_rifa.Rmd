@@ -8,16 +8,12 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+Importing various libraries
 ```{r}
 library(data.table)
 library(magrittr)
 library(ggplot2)
 ```
-
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
-
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
 Load all the tables
 ```{r}
@@ -39,7 +35,7 @@ tprovince_dt = fread(tables[10])
 weather_dt = fread(tables[11])
 ```
 
-### VISUALIZING TREND IN NUMBER OF CASES FOR VARIOUS PROVINCES
+### WORKING WITH TIME_PROVINCE FILE
 ```{r}
 head(tprovince_dt,n=5)
 ```
@@ -51,7 +47,7 @@ summary(tprovince_dt)
 tprovince_dt[, unique(province)]
 ```
 ```{r}
-# Filtering out provinces with no cases
+# Making a new table with province and the corresponding total number of cases
 province_cases<-tprovince_dt[, .(number_of_cases=max(confirmed)), by='province']
 province_cases
 ```
@@ -61,24 +57,133 @@ ggplot(province_cases, aes(x=province, y=number_of_cases , fill=province)) + geo
 labs(x='Province', y='Total number of confirmed cases')
 ```
 ```{r}
-# Plotting at the total number of cases for each province
+# Plotting growth in the total number of cases for various provinces
 ggplot(tprovince_dt, aes(x=date, y=confirmed, color=province)) + geom_line() + geom_point() +
 theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
 labs(x='Date', y='Number of confirmed cases')
 ```
-The number of cases is quite high (in thousands) for some provinces and comparatively smaller (in hundreds or less) for other provinces. For bettaer visualization of the growth in number of cases, we look at individual provinces. 
+The number of cases is quite high (in thousands) for some provinces and comparatively smaller (in hundreds or less) for other provinces. 
 
-#### Growth of total number of cases for various provinces
-##### Seoul
+#### Growth in total number of cases for various provinces
+##### We look at various provinces individually
 ```{r}
 tprovince_Seoul=tprovince_dt[province=="Seoul"]
-tprovince_Seoul
+#Busan			
+#Daegu			
+#Incheon		
+#Gwangju			
+#Daejeon			
+#Ulsan			
+#Sejong		
+#Gyeonggi-do			
+#Gangwon-do
+#Chungcheongbuk-do			
+#Chungcheongnam-do			
+#Jeollabuk-do			
+#Jeollanam-do			
+#Gyeongsangbuk-do			
+#Gyeongsangnam-do		
+#Jeju-do
 ```
 
+##### Seoul
+```{r}
+# Plotting total number of cases for Seoul
+ggplot(tprovince_Seoul, aes(x=date, y=confirmed)) + geom_line() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+labs(x="Date", y="Number of total confirmed cases")
+```
+The same could be done for other provinces.
 
+##### Visualizing the number of new cases and new deaths per day for various provinces
 
+###### Seoul
+```{r}
+#Adding column of daily new cases and daily new deaths
+tprovince_Seoul[,daily_new_case:=confirmed-shift(confirmed,fill=first(confirmed))]
+tprovince_Seoul[, daily_new_deaths:=  deceased-shift(deceased,fill=first(deceased)) ]
+```
+```{r}
+#Plotting daily new cases for Seoul 
+ggplot(tprovince_Seoul, aes(x=date, y=daily_new_case)) + geom_line() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+labs(x="Date", y="Number of new confirmed cases")
+```
 
+```{r}
+#Plotting daily new deaths for Seoul 
+ggplot(tprovince_Seoul, aes(x=date, y=daily_new_deaths)) + geom_line() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+labs(x="Date", y="Number of new deaths")
+```
 
+## Analyzing effect of temp on number of covid cases
+### Weather file
+```{r}
+head(weather_dt, n=5)
+```
+```{r}
+summary(weather_dt)
+```
+#### Getting weather tables for various provinces (Currently only for Seoul province)
+```{r}
+weather_Seoul=weather_dt[province == "Seoul"]
+weather_Seoul
+```
+#### Combining Weather and time info for Seoul province
+```{r}
+#Listing various columns of both tables
+colnames(tprovince_Seoul)
+colnames(weather_Seoul)
+```
+```{r}
+# Deleting the columns not required for this analysis from both tables and creating new tables 
+Seoul_time<-tprovince_Seoul[,c("province","time"):=NULL]
+Seoul_weather<-weather_Seoul[,c("province", "code"):=NULL]
+```
+
+```{r}
+# Merging the two tables (weather and time)
+Seoul_weather_time <- merge(Seoul_weather, Seoul_time, by = "date", all = FALSE)
+Seoul_weather_time[,.(avg_temp,daily_new_case)]
+```
+```{r}
+#Plotting daily new cases against temp
+ggplot(Seoul_weather_time, aes(x=avg_temp, y=daily_new_case)) + geom_point() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+labs(x="temp", y="Number of new cases")
+```
+As temperature values repeat, we take average number of cases corresponding to a particular temperature.
+```{r}
+Seoul_weather_time[, avg_no_of_new_cases:=as.integer(mean(daily_new_case)), by=avg_temp]
+Seoul_weather_time[,.(avg_temp,avg_no_of_new_cases)][order(-avg_no_of_new_cases)]
+```
+```{r}
+#Plotting average number of new cases against temp
+ggplot(Seoul_weather_time, aes(x=avg_temp, y=avg_no_of_new_cases)) + geom_line() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+labs(x="Temperature", y="Average number of new cases")
+```
+From the above graph we infer that the average number of cases is generally higher for a temperature above 3.8 and comaparatively lower for lower temperature ranges.
+
+```{r}
+#Plotting daily new cases against precipitation
+ggplot(Seoul_weather_time, aes(x=precipitation, y=daily_new_case)) + geom_point() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+labs(x="Precipitation", y="Number of new cases")
+```
+Here also, we need to look at average number of cases for a particular precipitation value, as precipitation value is same for multiple days.
+```{r}
+Seoul_weather_time[, avg_no_of_new_cases_prep:=as.integer(mean(daily_new_case), na.rm=TRUE), by=precipitation]
+Seoul_weather_time[, .(precipitation, avg_no_of_new_cases_prep)]
+```
+```{r}
+#Plotting average number of new cases against precipitation
+ggplot(Seoul_weather_time, aes(x=precipitation, y=avg_no_of_new_cases_prep)) + geom_line() + geom_point()+
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+labs(x="Precipitation", y="Average number of new cases")
+```
+Precipitation changes seem to have no effect on the number of COVID cases.
 
 
 
