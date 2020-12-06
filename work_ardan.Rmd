@@ -9,6 +9,8 @@ library(data.table)
 library(magrittr) 
 library(tidyr)
 library(ggrepel)
+library(GGally)
+library(pheatmap)
 ```
 
 
@@ -52,36 +54,52 @@ searchTrend_dt[date >= as.Date("2019-12-01") ] %>% ggplot(aes(x= date,y= search_
 ```{r}
 #Policy$type vs. query_frequency
 merge(policy_dt,searchTrend_dt[date >= as.Date("2019-12-01") ], by.x="start_date", by.y="date",all.y = TRUE) %>% ggplot(.,aes(x= start_date,y= search_metric)) + geom_line(aes(color=search_keyword))  + facet_wrap(~type) + scale_y_log10() + geom_point(data = policy_dt,aes(x=start_date, y=5, alpha=0.001))
+#Outcome: Only Alert policies ignited web searches for "coronavirus."
 
 
-merge(policy_dt,searchTrend_dt[date >= as.Date("2019-12-01") ], by.x="start_date", by.y="date",all.y = TRUE) %>% ggplot(.,aes(x= start_date,y= search_metric)) + geom_line(aes(linetype=search_keyword))+ scale_y_log10() + geom_jitter(data = policy_dt,aes(x=start_date, y=5, color = type,alpha=0.001))
+merge(policy_dt,searchTrend_dt[date >= as.Date("2019-12-01") & search_keyword == "coronavirus"], by.x="start_date", by.y="date",all.y = TRUE) %>% ggplot(aes(x= start_date,y= search_metric)) + geom_line(aes(linetype=search_keyword))+ scale_y_log10() + geom_point(data = merge(policy_dt,searchTrend_dt[date >= as.Date("2019-12-01") & search_keyword == "coronavirus" ], by.x="start_date", by.y="date",all.x = TRUE), aes(x=start_date, y=search_metric, color = type))
+#Outcome: Even Alert type policies are uncorrelated to the web queries. They don't ignite.
 
 ```
 
 ```{r}
 #korean_stock_market_performance vs. case numbers
 krx100_dt
-merge(krx100_dt,time_dt, by.x = 'Date', by.y = 'date') %>% ggplot(aes(x=confirmed, y= Price, color = Date, size = Vol.)) + geom_point()
+merge(krx100_dt,time_dt, by.x = 'Date', by.y = 'date') %>% ggplot(aes(x=confirmed, y= Price, color = Date, size = Vol., alpha = 0.05)) + geom_point()
+
+#inferences
+#1. outbreak has pushed trading volumes. financial markets became hot.(Prior to March, are the lowest volume of all months)
+#2. markets adapted coronavirus cases by time. During March, ~8000 cases was enough to far the market to see ~3500 price points. However by time, markets saw above ~4500 price points with +12000 cases.
+#3. trading volume decreased as we approach July 2020. 
+
 
 ```
 
 ```{r}
 #stock market vs. query_trends
-merge(krx100_dt, searchTrend_dt, by.x='Date', by.y= 'date')[search_keyword == "coronavirus"] %>% ggplot(aes(x = Price, y= search_metric, color = Vol.)) + geom_point() + scale_x_log10()
+merge(krx100_dt, searchTrend_dt, by.x='Date', by.y= 'date')[search_keyword == "coronavirus"] %>% ggplot(aes(x = Price, y= scale(search_metric), size = Vol., alpha = 0.001)) + geom_point() + scale_x_log10()
 
 
-merge(krx100_dt, searchTrend_dt, by.x='Date', by.y= 'date')[search_keyword == "coronavirus"] %>% ggplot(aes(x=Date,y=scale(Price))) + geom_line() + geom_line(aes(x=Date, y=scale(search_metric))) 
+market_metric_mat <- merge(krx100_dt, searchTrend_dt, by.x='Date', by.y= 'date')[search_keyword == "coronavirus",c(2,8)] %>% as.matrix()
+rownames(market_metric_mat) <- merge(krx100_dt, searchTrend_dt, by.x='Date', by.y= 'date')[search_keyword == "coronavirus",Date]
+pheatmap(market_metric_mat,cluster_rows = F,cluster_cols = F, scale="column",show_rownames = FALSE)
+
+
+merge(krx100_dt, searchTrend_dt, by.x='Date', by.y= 'date')[search_keyword == "coronavirus"] %>% ggplot(aes(x=Date,y=scale(Price))) + geom_line(aes(color="KRX100 Market Value(Scaled)")) + geom_line(aes(x=Date, y=scale(search_metric), color="web queries for -coronavirus-")) + scale_color_discrete(name = "Line")
 ```
 
 ```{r}
 #stock_market_performance vs. cases in provinces
 
-merge(timeProvince_dt, krx100_dt, by.x='date', by.y='Date')%>% ggplot(aes(x=date,y=Price)) + geom_line() + geom_line(aes(x=date,y=confirmed)) +  facet_wrap(~province)
+merge(timeProvince_dt, krx100_dt, by.x='date', by.y='Date')%>% ggplot(aes(x=date,y=scale(Price))) + geom_line() + geom_line(aes(x=date,y=scale(confirmed))) +  facet_wrap(~province)
 ```
 
 ```{r}
 # policies vs stock_market_reaction
+ggplot(krx100_dt, aes(x=Date, y=Price)) + geom_line() + geom_point(data = merge(krx100_dt, policy_dt, by.x= "Date", by.y ="start_date"), aes(x=Date,y=Price,color=type))
 
+#interpretation
+#1.transformation measures helped to contain the spread.
 
 ```
 
