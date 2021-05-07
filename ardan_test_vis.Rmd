@@ -1,0 +1,66 @@
+---
+subtitle: 
+---
+
+Loading packages and patient info dataset to supply the age of the patients and the number of days that they spent in a care unit.
+```{r}
+library(data.table)
+library(magrittr)
+library(ggplot2)
+library(pheatmap)
+library(tidyr)
+
+pinfo_dt <- fread(paste0("data/PatientInfo.csv"), sep = ",")
+```
+
+The number of days that the patients stayed in hospital units are computed by subtracting the date that they're officialy released("released_date" column) from the date that they're officially tested positive and isolated in the hospital unit("confirmed_date" column). The new column is named "recovery_duration". This will be our test statistic, which will be observed under different age groups.
+```{r}
+a_pinfo_dt <- copy(pinfo_dt)
+a_pinfo_dt[, recovery_duration := released_date-confirmed_date]
+```
+
+Rows that are populated with NAs are cleaned. Also "age" column had many empty string entries, which are also cleaned. As a result of this cleaning, we lost nearly 70% of our initial sample. However we still have a sizable sample at hand for our analysis.
+```{r}
+pinfo2_dt <- na.omit(a_pinfo_dt[!(age=="")], cols = "recovery_duration")
+```
+
+The patient sample is divided into two groups based on their ages, as "below 60" and "above 60".
+```{r}
+pinfo2_dt[age %in% c("0s","10s","20s","30s","40s","50s"), age:="below 60"]
+pinfo2_dt[age %in% c("60s","70s","80s","90s","100s"), age := "above 60"]
+```
+
+The dataset is ready for observing patterns. We start by creating descriptive plots
+to see how the variables are distributed.
+```{r}
+ggplot(pinfo2_dt, aes(x=factor(age),y=recovery_duration)) + geom_boxplot() + scale_x_discrete(labels = c("Above 60 years old","Below 60 years old")) + labs(title ="The age of patients affects the duration of their hospitalization",x="Age groups", y="Number of days to recover") + theme_minimal()
+```
+
+```{r}
+ggplot(pinfo2_dt[age == "below 60"], aes(sample=recovery_duration)) + geom_qq() + stat_qq_line() + labs(title ="QQ-plot demonstrates the quasi-normal distribution", x="Theoretical distribution", y="Sample distribution - Below 60") + theme_minimal()
+ggplot(pinfo2_dt[age == "above 60"], aes(sample=recovery_duration)) + geom_qq() + stat_qq_line() + labs(title = "QQ-plot demonstrates the quasi-normal distribution",x="Theoretical distribution", y="Sample distribution - Above 60") + theme_minimal()
+```
+
+QQ plots revealed that our distribution are really quasi-gaussian so a Welch's test should perform well as Wilcoxon rank-sum would do. We will apply both to compare and contrast.
+
+```{r}
+wilcox.test(recovery_duration ~ age,data=pinfo2_dt,conf.int =TRUE)
+t.test(recovery_duration ~ age,data=pinfo2_dt,conf.int =TRUE)
+```
+
+Both tests proved significancy. Wilcoxon rank-sum tests suggest that at 95% confidence level, the mean difference between the recovery durations of the two groups are at least 4 and at most 7 days.Welch's test offers a similar intuition with 4.7 days and 8.3 days. The "effect size" can be questioned in this case. From our point of view, it's not a breakthrough effect size, therefore not so significant discovery. Nevertheless, we believe that it can be helpful in the planning of intensive care units in hospitals, which are extremely scarce at some locations.
+
+
+The final question we directed to the statistics is about the probable confounders. Here we suscepted the sex of the patient, which may affect the hospitalization duration. Therefore, we tested the association by conditioning the sex of the patient.
+
+```{r}
+ggplot(pinfo2_dt, aes(x=factor(age),y=recovery_duration)) + geom_boxplot() + facet_wrap(~sex)+ scale_x_discrete(labels = c("Above 60 years old","Below 60 years old")) + labs(title ="The association persists when conditioned on the sex of the patient",x="Age groups", y="Number of days to recover") + theme_minimal()
+```
+
+The same tests are applied to wipe away indirectionality concerns. 
+```{r}
+wilcox.test(recovery_duration ~ age,data=pinfo2_dt[sex=="male"],conf.int =TRUE)
+
+wilcox.test(recovery_duration ~ age,data=pinfo2_dt[sex=="female"],conf.int =TRUE)
+```
+Results are inline with our initial inference. Sex is not a confounder in this association. In future works, other probable confounders could also be tested. 
